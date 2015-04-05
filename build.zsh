@@ -5,6 +5,8 @@
 #	  (stuff *will* break if you add non-C things as targets)
 #	- Clean some more (or a lot). I mean, this script could even be reused if
 #	  it were cleaner, more readable and somewhat more documented.
+#	- Using subdirs creates trouble. Really. Don’t do it unless it’s for
+#	  completely separate, independent sub-projects.
 #
 # WARNINGS and LIMITATIONS:
 # 	- Using a relative path in DESTDIR= *will* fail.
@@ -105,12 +107,6 @@ function get_distfiles {
 		typeset file="${file%.c}.h"
 		if [[ -e "$file" ]]; then
 			echo "$file"
-		fi
-	done
-
-	for target in ${targets[@]}; do
-		if exists "${type[$target]}.distfiles"; then
-			"${type[$target]}.distfiles"
 		fi
 	done
 
@@ -221,9 +217,11 @@ function main {
 	write "Q := @"
 	write
 
-	write -n "all: "
-	(( ${#targets[@]} > 0 )) && write -n " ${targets[@]}"
-	(( ${#subdirs[@]} > 0 )) && write -n " subdirs"
+	if [[ -z "${all}" ]] || (( ${#all[@]} == 0 )); then
+		all=(${targets[@]} $((( ${#subdirs[@]} > 0 )) && echo subdirs))
+	fi
+
+	write -n "all: ${all[@]}"
 
 	if $gnu; then
 		write "\n"
@@ -328,6 +326,9 @@ function main {
 			write -n " ${target}.test"
 		fi
 	done
+	for target in ${tests[@]}; do
+		write -n " ${target}"
+	done
 	write "\n\t@:\n"
 
 	write "subdirs.test:"
@@ -393,6 +394,52 @@ function main {
 		done
 	fi
 
+	write "help:"
+
+	if [[ -n "$package" ]]; then
+		write "	@echo '${fg_bold[white]} :: $package-$version${reset_color}'"
+		write "	@echo ''"
+	fi
+
+	write "	@echo '${fg_bold[white]}Generic targets:${reset_color}'"
+	typeset -la help
+	help=(
+		help       "Prints this help message."
+		all        "Builds all targets."
+		dist       "Creates tarballs of the files of the project."
+		install    "Installs the project."
+		clean      "Removes compiled files."
+		uninstall  "Deinstalls the project."
+	)
+	for rule message in ${help[@]}; do
+		printf "	@echo '${reset_color}    - ${fg_bold[green]}%-14s${fg[white]}$message${reset_color}'\n" \
+			"$rule" >> $Makefile
+	done
+
+	write "	@echo ''"
+	write "	@echo '${fg_bold[white]}CLI-modifiable variables:${reset_color}'"
+	for VAR in CC CFLAGS LDFLAGS DESTDIR; do
+		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]}\${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
+	done
+	for VAR _ in ${prefixes}; do
+		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]}\${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
+	done
+
+	write "	@echo ''"
+	write "	@echo '${fg_bold[white]}Project targets: ${reset_color}'"
+	for T in ${targets[@]}; do
+		printf "	@echo '    - ${fg_bold[yellow]}%-14s${fg[white]}${type[$T]}${reset_color}'\n" "$T" >> $Makefile
+	done
+
+	write "	@echo ''"
+	write "	@echo '${fg_bold[white]}Makefile options:${reset_color}'"
+	printf "	@echo '    - %-14s$gnu'\n"    "gnu:"    >> $Makefile
+	printf "	@echo '    - %-14s$colors'\n" "colors:" >> $Makefile
+
+	write "	@echo ''"
+	write "	@echo '${fg_bold[white]}Rebuild the Makefile with:${reset_color}'"
+	write "	@echo '    zsh ./build.zsh$($colors && echo -n " -c")$($gnu && echo -n " -g")'"
+
 	for i in ${subdirs[@]}; do
 		(
 			cd $i
@@ -403,7 +450,7 @@ function main {
 		)
 	done
 
-	write ".PHONY: all subdirs clean distclean dist install uninstall"
+	write ".PHONY: all subdirs clean distclean dist install uninstall help"
 	write
 }
 
@@ -411,10 +458,12 @@ export Makefile=Makefile
 export MAKE='$(MAKE)'
 export Q='$(Q)'
 export gnu=false
+export colors=false
 
 while (($# > 0)); do
 	case "$1" in
 		-c|--colors)
+			export colors=true
 			autoload -U colors
 			colors
 		;;
