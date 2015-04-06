@@ -19,7 +19,7 @@ build.zsh:
 
 build.zsh.install: build.zsh
 	@echo '[01;31m  [IN]    [01;37m$(BINDIR)/build.zsh[00m'
-	$(Q)mkdir -p '$(DESTDIR)$(BINDIR)/build.zsh'
+	$(Q)mkdir -p '$(DESTDIR)$(BINDIR)'
 	$(Q)install -m0755 build.zsh $(DESTDIR)$(BINDIR)/build.zsh
 
 build.zsh.clean:
@@ -74,6 +74,8 @@ $(PACKAGE)-$(VERSION).tar.gz: distdir
 	@echo '[01;33m  [TAR]   [01;37m$(PACKAGE)-$(VERSION).tar.gz[00m'
 	$(Q)tar czf $(PACKAGE)-$(VERSION).tar.gz \
 		$(PACKAGE)-$(VERSION)/build/binary.zsh \
+		$(PACKAGE)-$(VERSION)/build/library.zsh \
+		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
 		$(PACKAGE)-$(VERSION)/build/script.zsh \
 		$(PACKAGE)-$(VERSION)/project.zsh \
 		$(PACKAGE)-$(VERSION)/Makefile
@@ -83,6 +85,8 @@ $(PACKAGE)-$(VERSION).tar.xz: distdir
 	@echo '[01;33m  [TAR]   [01;37m$(PACKAGE)-$(VERSION).tar.xz[00m'
 	$(Q)tar cJf $(PACKAGE)-$(VERSION).tar.xz \
 		$(PACKAGE)-$(VERSION)/build/binary.zsh \
+		$(PACKAGE)-$(VERSION)/build/library.zsh \
+		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
 		$(PACKAGE)-$(VERSION)/build/script.zsh \
 		$(PACKAGE)-$(VERSION)/project.zsh \
 		$(PACKAGE)-$(VERSION)/Makefile
@@ -92,6 +96,8 @@ $(PACKAGE)-$(VERSION).tar.bz2: distdir
 	@echo '[01;33m  [TAR]   [01;37m$(PACKAGE)-$(VERSION).tar.bz2[00m'
 	$(Q)tar cjf $(PACKAGE)-$(VERSION).tar.bz2 \
 		$(PACKAGE)-$(VERSION)/build/binary.zsh \
+		$(PACKAGE)-$(VERSION)/build/library.zsh \
+		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
 		$(PACKAGE)-$(VERSION)/build/script.zsh \
 		$(PACKAGE)-$(VERSION)/project.zsh \
 		$(PACKAGE)-$(VERSION)/Makefile

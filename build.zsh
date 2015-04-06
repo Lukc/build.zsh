@@ -7,6 +7,7 @@
 #	  it were cleaner, more readable and somewhat more documented.
 #	- Using subdirs creates trouble. Really. Don’t do it unless it’s for
 #	  completely separate, independent sub-projects.
+#	  Also, they’re unmaintained and probably broken by now.
 #
 # WARNINGS and LIMITATIONS:
 # 	- Using a relative path in DESTDIR= *will* fail.
@@ -162,7 +163,7 @@ done
 
 function main {
 	typeset -a prefixes directories
-	typeset -A ldflags cflags sources type depends install
+	typeset -A ldflags cflags sources type depends install auto
 
 	prefixes=(
 		PREFIX '/usr/local'
@@ -229,57 +230,60 @@ function main {
 		write "\n\t@:\n"
 	fi
 
-	for target in ${targets[@]}; do
-		(
-			typeset -a src
-			src=($(echo ${sources[$target]}))
-			local installdir="${install[$target]}"
+	local target_index=1
+	while (($target_index <= ${#targets[@]})); do
+		local target="${targets[$target_index]}"
 
-			if exists "${type[$target]}.build"; then
-				${type[$target]}.build
-			else
-				if ! exists "${type[$target]}.test"; then
-					error "No predefined rule for the following type: ${type[$target]}"
-					error "  (expect trouble, nothing’s gonna work!)"
-				fi
+		typeset -a src
+		src=($(echo ${sources[$target]}))
+		local installdir="${install[$target]}"
+
+		if exists "${type[$target]}.build"; then
+			${type[$target]}.build
+		else
+			if ! exists "${type[$target]}.test"; then
+				error "No predefined rule for the following type: ${type[$target]}"
+				error "  (expect trouble, nothing’s gonna work!)"
 			fi
+		fi
 
-			if exists "${type[$target]}.install"; then
-				${type[$target]}.install
+		if exists "${type[$target]}.install"; then
+			${type[$target]}.install
+		else
+			if [[ -z "${installdir}" ]]; then
+				error "No install[${type[${target}]}] and no default installation directory."
+				error "Your “install” rule will be broken!"
 			else
-				if [[ -z "${installdir}" ]]; then
-					error "No install[${type[${target}]}] and no default installation directory."
-					error "Your “install” rule will be broken!"
-				else
-					write "${target}.install: \$(DESTDIR)${installdir}"
-					write "\t@echo '$(IN ${installdir}/${target})'"
-					write "\t${Q}install -m755 $target \$(DESTDIR)${installdir}/$target"
-					write
-				fi
-			fi
-
-			if exists "${type[$target]}.clean"; then
-				${type[$target]}.clean
-			else
-				write "${target}.clean:"
-				write "\t@echo '$(RM ${target})'"
-				write "\t${Q}rm -f ${target}"
+				write "${target}.install: \$(DESTDIR)${installdir}"
+				write "\t@echo '$(IN ${installdir}/${target})'"
+				write "\t${Q}install -m755 $target \$(DESTDIR)${installdir}/$target"
 				write
 			fi
+		fi
 
-			if exists "${type[$target]}.uninstall"; then
-				${type[$target]}.uninstall
-			else
-				write "${target}.uninstall:"
-				write "\t@echo '$(RM "${installdir}/${target}")'"
-				write "\t${Q}rm -f '\$(DESTDIR)${installdir}/${target}'"
-				write
-			fi
+		if exists "${type[$target]}.clean"; then
+			${type[$target]}.clean
+		else
+			write "${target}.clean:"
+			write "\t@echo '$(RM ${target})'"
+			write "\t${Q}rm -f ${target}"
+			write
+		fi
 
-			if exists "${type[$target]}.test"; then
-				${type[$target]}.test
-			fi
-		)
+		if exists "${type[$target]}.uninstall"; then
+			${type[$target]}.uninstall
+		else
+			write "${target}.uninstall:"
+			write "\t@echo '$(RM "${installdir}/${target}")'"
+			write "\t${Q}rm -f '\$(DESTDIR)${installdir}/${target}'"
+			write
+		fi
+
+		if exists "${type[$target]}.test"; then
+			${type[$target]}.test
+		fi
+
+		((target_index++))
 	done
 
 	for dir in ${directories[@]}; do
@@ -428,7 +432,9 @@ function main {
 	write "	@echo ''"
 	write "	@echo '${fg_bold[white]}Project targets: ${reset_color}'"
 	for T in ${targets[@]}; do
-		printf "	@echo '    - ${fg_bold[yellow]}%-14s${fg[white]}${type[$T]}${reset_color}'\n" "$T" >> $Makefile
+		if [[ "${auto[$T]}" != true ]]; then
+			printf "	@echo '    - ${fg_bold[yellow]}%-14s${fg[white]}${type[$T]}${reset_color}'\n" "$T" >> $Makefile
+		fi
 	done
 
 	write "	@echo ''"
