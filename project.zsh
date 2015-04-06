@@ -9,6 +9,7 @@ for i in build/*.zsh; do
 	targets+=($i)
 	type[$i]=script
 	install[$i]='$(SHAREDIR)/build.zsh'
+	auto[$i]=true
 done
 
 dist=(build/*.zsh project.zsh Makefile)
