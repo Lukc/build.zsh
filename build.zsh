@@ -153,8 +153,12 @@ function duplicated {
 	return 1
 }
 
-for i in build/*.zsh; do
-	. $i
+for dir in "@SHAREDIR@/build.zsh" build; do
+	[[ -d "$dir" ]] && {
+		for i in "$dir"/*.zsh; do
+			. "$i"
+		done
+	}
 done
 
 ##
@@ -256,6 +260,7 @@ function main {
 			else
 				write "${target}.install: \$(DESTDIR)${installdir}"
 				write "\t@echo '$(IN ${installdir}/${target})'"
+				write "\t@mkdir -p '\$(DESTDIR)/${installdir}'"
 				write "\t${Q}install -m755 $target \$(DESTDIR)${installdir}/$target"
 				write
 			fi

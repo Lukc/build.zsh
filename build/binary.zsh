@@ -21,18 +21,20 @@ function binary.build {
 
 function binary.install {
 	local install="${install[$target]:-\$(BINDIR)}"
+	local basename="$(basename "${target}")"
 	write "${target}.install: ${target}"
-	write "\t@echo '$(IN "${install}/${target}")'"
+	write "\t@echo '$(IN "${install}/${basename}")'"
 	write "\t${Q}mkdir -p '\$(DESTDIR)${install}'"
-	write "\t${Q}install -m0755 ${target} \$(DESTDIR)${install}/${target}"
+	write "\t${Q}install -m0755 ${target} \$(DESTDIR)${install}/${basename}"
 	write
 }
 
 function binary.uninstall {
 	local install="${install[$target]:-\$(BINDIR)}"
+	local basename="$(basename "${target}")"
 	write "${target}.uninstall:"
-	write "\t@echo '$(RM ${install}/${target})'"
-	write "\t${Q}rm -f '\$(DESTDIR)${install}/${target}'"
+	write "\t@echo '$(RM ${install}/${basename})'"
+	write "\t${Q}rm -f '\$(DESTDIR)${install}/${basename}'"
 	write
 }
 

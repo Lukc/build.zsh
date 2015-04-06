@@ -13,7 +13,7 @@ LDFLAGS :=
 
 Q := @
 
-all: build.zsh
+all: build.zsh build/binary.zsh build/library.zsh build/ofile.zsh build/script.zsh
 
 build.zsh:
 
@@ -27,6 +27,58 @@ build.zsh.clean:
 build.zsh.uninstall:
 	@echo '[01;37m  [RM]    [01;37m$(BINDIR)/build.zsh[00m'
 	$(Q)rm -f '$(DESTDIR)$(BINDIR)/build.zsh'
+
+build/binary.zsh:
+
+build/binary.zsh.install: build/binary.zsh
+	@echo '[01;31m  [IN]    [01;37m$(SHAREDIR)/build.zsh/binary.zsh[00m'
+	$(Q)mkdir -p '$(DESTDIR)$(SHAREDIR)/build.zsh'
+	$(Q)install -m0755 build/binary.zsh $(DESTDIR)$(SHAREDIR)/build.zsh/binary.zsh
+
+build/binary.zsh.clean:
+
+build/binary.zsh.uninstall:
+	@echo '[01;37m  [RM]    [01;37m$(SHAREDIR)/build.zsh/binary.zsh[00m'
+	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/binary.zsh'
+
+build/library.zsh:
+
+build/library.zsh.install: build/library.zsh
+	@echo '[01;31m  [IN]    [01;37m$(SHAREDIR)/build.zsh/library.zsh[00m'
+	$(Q)mkdir -p '$(DESTDIR)$(SHAREDIR)/build.zsh'
+	$(Q)install -m0755 build/library.zsh $(DESTDIR)$(SHAREDIR)/build.zsh/library.zsh
+
+build/library.zsh.clean:
+
+build/library.zsh.uninstall:
+	@echo '[01;37m  [RM]    [01;37m$(SHAREDIR)/build.zsh/library.zsh[00m'
+	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/library.zsh'
+
+build/ofile.zsh:
+
+build/ofile.zsh.install: build/ofile.zsh
+	@echo '[01;31m  [IN]    [01;37m$(SHAREDIR)/build.zsh/ofile.zsh[00m'
+	$(Q)mkdir -p '$(DESTDIR)$(SHAREDIR)/build.zsh'
+	$(Q)install -m0755 build/ofile.zsh $(DESTDIR)$(SHAREDIR)/build.zsh/ofile.zsh
+
+build/ofile.zsh.clean:
+
+build/ofile.zsh.uninstall:
+	@echo '[01;37m  [RM]    [01;37m$(SHAREDIR)/build.zsh/ofile.zsh[00m'
+	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/ofile.zsh'
+
+build/script.zsh:
+
+build/script.zsh.install: build/script.zsh
+	@echo '[01;31m  [IN]    [01;37m$(SHAREDIR)/build.zsh/script.zsh[00m'
+	$(Q)mkdir -p '$(DESTDIR)$(SHAREDIR)/build.zsh'
+	$(Q)install -m0755 build/script.zsh $(DESTDIR)$(SHAREDIR)/build.zsh/script.zsh
+
+build/script.zsh.clean:
+
+build/script.zsh.uninstall:
+	@echo '[01;37m  [RM]    [01;37m$(SHAREDIR)/build.zsh/script.zsh[00m'
+	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/script.zsh'
 
 $(DESTDIR)$(PREFIX):
 	@echo '[01;35m  [DIR]   [01;37m$(PREFIX)[00m'
@@ -43,12 +95,12 @@ $(DESTDIR)$(SHAREDIR):
 $(DESTDIR)$(INCLUDEDIR):
 	@echo '[01;35m  [DIR]   [01;37m$(INCLUDEDIR)[00m'
 	$(Q)mkdir -p $(DESTDIR)$(INCLUDEDIR)
-install: subdirs.install build.zsh.install
+install: subdirs.install build.zsh.install build/binary.zsh.install build/library.zsh.install build/ofile.zsh.install build/script.zsh.install
 	@:
 
 subdirs.install:
 
-uninstall: subdirs.uninstall build.zsh.uninstall
+uninstall: subdirs.uninstall build.zsh.uninstall build/binary.zsh.uninstall build/library.zsh.uninstall build/ofile.zsh.uninstall build/script.zsh.uninstall
 	@:
 
 subdirs.uninstall:
@@ -58,7 +110,7 @@ test: all subdirs subdirs.test
 
 subdirs.test:
 
-clean: build.zsh.clean
+clean: build.zsh.clean build/binary.zsh.clean build/library.zsh.clean build/ofile.zsh.clean build/script.zsh.clean
 
 distclean: clean
 
@@ -126,6 +178,10 @@ help:
 	@echo ''
 	@echo '[01;37mProject targets: [00m'
 	@echo '    - [01;33mbuild.zsh     [37mscript[00m'
+	@echo '    - [01;33mbuild/binary.zsh[37mscript[00m'
+	@echo '    - [01;33mbuild/library.zsh[37mscript[00m'
+	@echo '    - [01;33mbuild/ofile.zsh[37mscript[00m'
+	@echo '    - [01;33mbuild/script.zsh[37mscript[00m'
 	@echo ''
 	@echo '[01;37mMakefile options:[00m'
 	@echo '    - gnu:          true'

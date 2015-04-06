@@ -5,5 +5,11 @@ version=0.2
 targets=(build.zsh)
 type[build.zsh]=script
 
+for i in build/*.zsh; do
+	targets+=($i)
+	type[$i]=script
+	install[$i]='$(SHAREDIR)/build.zsh'
+done
+
 dist=(build/*.zsh project.zsh Makefile)
 
