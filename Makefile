@@ -17,7 +17,11 @@ Q := @
 
 all: build.zsh build/binary.zsh build/library.zsh build/ofile.zsh build/script.zsh build/sharedlib.zsh build/staticlib.zsh
 
-build.zsh:
+build.zsh: build.zsh.in
+	@echo '[01;32m  [SED]   [01;37mbuild.zsh[00m'
+	$(Q)sed -e 's&@LIBDIR@&$(LIBDIR)&;s&@BINDIR@&$(BINDIR)&;s&@SHAREDIR@&$(SHAREDIR)&;' 'build.zsh.in' > 'build.zsh'
+	$(Q)chmod +x 'build.zsh'
+
 
 build.zsh.install: build.zsh
 	@echo '[01;31m  [IN]    [01;37m$(BINDIR)/build.zsh[00m'
@@ -25,6 +29,8 @@ build.zsh.install: build.zsh
 	$(Q)install -m0755 build.zsh $(DESTDIR)$(BINDIR)/build.zsh
 
 build.zsh.clean:
+	@echo '[01;37m  [RM]    [01;37mbuild.zsh[00m'
+	$(Q)rm -f build.zsh
 
 build.zsh.uninstall:
 	@echo '[01;37m  [RM]    [01;37m$(BINDIR)/build.zsh[00m'

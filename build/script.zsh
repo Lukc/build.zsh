@@ -4,8 +4,13 @@ function script.build {
 
 	if [[ -e "${target}.in" ]]; then
 		write " ${target}.in"
-		write "\tcat ${target}.in > ${target}"
-		write "\tchmod +x ${target}"
+		write "\t@echo '$(SED "${target}")'"
+		write -n "\t${Q}sed -e '"
+		write -n "s&@LIBDIR@&\$(LIBDIR)&;"
+		write -n "s&@BINDIR@&\$(BINDIR)&;"
+		write -n "s&@SHAREDIR@&\$(SHAREDIR)&;"
+		write    "' '${target}.in' > '${target}'"
+		write "\t${Q}chmod +x '${target}'"
 	fi
 
 	write "\n"

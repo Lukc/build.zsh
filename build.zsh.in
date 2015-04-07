@@ -53,6 +53,10 @@ function RM {
 	echo "${fg_bold[white]}  [RM]    ${fg_bold[white]}$@${reset_color}"
 }
 
+function SED {
+	echo "${fg_bold[green]}  [SED]   ${fg_bold[white]}$@${reset_color}"
+}
+
 function DIR {
 	echo "${fg_bold[magenta]}  [DIR]   ${fg_bold[white]}$@${reset_color}"
 }
@@ -166,7 +170,7 @@ function duplicated {
 	return 1
 }
 
-for dir in "@SHAREDIR@/build.zsh" build; do
+for dir in "@SHAREDIR@/build.zsh" ./build; do
 	[[ -d "$dir" ]] && {
 		for i in "$dir"/*.zsh; do
 			. "$i"
