@@ -1,5 +1,5 @@
 PACKAGE = 'build_zsh'
-VERSION = '0.2'
+VERSION = '0.2.1'
 
 PREFIX := /usr/local
 BINDIR := $(PREFIX)/bin
@@ -8,12 +8,14 @@ SHAREDIR := $(PREFIX)/share
 INCLUDEDIR := $(PREFIX)/include
 
 CC := cc
+AR := ar
+RANLIB := ranlib
 CFLAGS := 
 LDFLAGS := 
 
 Q := @
 
-all: build.zsh build/binary.zsh build/library.zsh build/ofile.zsh build/script.zsh
+all: build.zsh build/binary.zsh build/library.zsh build/ofile.zsh build/script.zsh build/sharedlib.zsh build/staticlib.zsh
 
 build.zsh:
 
@@ -80,6 +82,32 @@ build/script.zsh.uninstall:
 	@echo '[01;37m  [RM]    [01;37m$(SHAREDIR)/build.zsh/script.zsh[00m'
 	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/script.zsh'
 
+build/sharedlib.zsh:
+
+build/sharedlib.zsh.install: build/sharedlib.zsh
+	@echo '[01;31m  [IN]    [01;37m$(SHAREDIR)/build.zsh/sharedlib.zsh[00m'
+	$(Q)mkdir -p '$(DESTDIR)$(SHAREDIR)/build.zsh'
+	$(Q)install -m0755 build/sharedlib.zsh $(DESTDIR)$(SHAREDIR)/build.zsh/sharedlib.zsh
+
+build/sharedlib.zsh.clean:
+
+build/sharedlib.zsh.uninstall:
+	@echo '[01;37m  [RM]    [01;37m$(SHAREDIR)/build.zsh/sharedlib.zsh[00m'
+	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/sharedlib.zsh'
+
+build/staticlib.zsh:
+
+build/staticlib.zsh.install: build/staticlib.zsh
+	@echo '[01;31m  [IN]    [01;37m$(SHAREDIR)/build.zsh/staticlib.zsh[00m'
+	$(Q)mkdir -p '$(DESTDIR)$(SHAREDIR)/build.zsh'
+	$(Q)install -m0755 build/staticlib.zsh $(DESTDIR)$(SHAREDIR)/build.zsh/staticlib.zsh
+
+build/staticlib.zsh.clean:
+
+build/staticlib.zsh.uninstall:
+	@echo '[01;37m  [RM]    [01;37m$(SHAREDIR)/build.zsh/staticlib.zsh[00m'
+	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/staticlib.zsh'
+
 $(DESTDIR)$(PREFIX):
 	@echo '[01;35m  [DIR]   [01;37m$(PREFIX)[00m'
 	$(Q)mkdir -p $(DESTDIR)$(PREFIX)
@@ -95,12 +123,12 @@ $(DESTDIR)$(SHAREDIR):
 $(DESTDIR)$(INCLUDEDIR):
 	@echo '[01;35m  [DIR]   [01;37m$(INCLUDEDIR)[00m'
 	$(Q)mkdir -p $(DESTDIR)$(INCLUDEDIR)
-install: subdirs.install build.zsh.install build/binary.zsh.install build/library.zsh.install build/ofile.zsh.install build/script.zsh.install
+install: subdirs.install build.zsh.install build/binary.zsh.install build/library.zsh.install build/ofile.zsh.install build/script.zsh.install build/sharedlib.zsh.install build/staticlib.zsh.install
 	@:
 
 subdirs.install:
 
-uninstall: subdirs.uninstall build.zsh.uninstall build/binary.zsh.uninstall build/library.zsh.uninstall build/ofile.zsh.uninstall build/script.zsh.uninstall
+uninstall: subdirs.uninstall build.zsh.uninstall build/binary.zsh.uninstall build/library.zsh.uninstall build/ofile.zsh.uninstall build/script.zsh.uninstall build/sharedlib.zsh.uninstall build/staticlib.zsh.uninstall
 	@:
 
 subdirs.uninstall:
@@ -110,7 +138,7 @@ test: all subdirs subdirs.test
 
 subdirs.test:
 
-clean: build.zsh.clean build/binary.zsh.clean build/library.zsh.clean build/ofile.zsh.clean build/script.zsh.clean
+clean: build.zsh.clean build/binary.zsh.clean build/library.zsh.clean build/ofile.zsh.clean build/script.zsh.clean build/sharedlib.zsh.clean build/staticlib.zsh.clean
 
 distclean: clean
 
@@ -129,6 +157,8 @@ $(PACKAGE)-$(VERSION).tar.gz: distdir
 		$(PACKAGE)-$(VERSION)/build/library.zsh \
 		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
 		$(PACKAGE)-$(VERSION)/build/script.zsh \
+		$(PACKAGE)-$(VERSION)/build/sharedlib.zsh \
+		$(PACKAGE)-$(VERSION)/build/staticlib.zsh \
 		$(PACKAGE)-$(VERSION)/project.zsh \
 		$(PACKAGE)-$(VERSION)/Makefile
 
@@ -140,6 +170,8 @@ $(PACKAGE)-$(VERSION).tar.xz: distdir
 		$(PACKAGE)-$(VERSION)/build/library.zsh \
 		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
 		$(PACKAGE)-$(VERSION)/build/script.zsh \
+		$(PACKAGE)-$(VERSION)/build/sharedlib.zsh \
+		$(PACKAGE)-$(VERSION)/build/staticlib.zsh \
 		$(PACKAGE)-$(VERSION)/project.zsh \
 		$(PACKAGE)-$(VERSION)/Makefile
 
@@ -151,11 +183,13 @@ $(PACKAGE)-$(VERSION).tar.bz2: distdir
 		$(PACKAGE)-$(VERSION)/build/library.zsh \
 		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
 		$(PACKAGE)-$(VERSION)/build/script.zsh \
+		$(PACKAGE)-$(VERSION)/build/sharedlib.zsh \
+		$(PACKAGE)-$(VERSION)/build/staticlib.zsh \
 		$(PACKAGE)-$(VERSION)/project.zsh \
 		$(PACKAGE)-$(VERSION)/Makefile
 
 help:
-	@echo '[01;37m :: build_zsh-0.2[00m'
+	@echo '[01;37m :: build_zsh-0.2.1[00m'
 	@echo ''
 	@echo '[01;37mGeneric targets:[00m'
 	@echo '[00m    - [01;32mhelp          [37mPrints this help message.[00m'

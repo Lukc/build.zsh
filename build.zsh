@@ -61,6 +61,19 @@ function TAR {
 	echo "${fg_bold[yellow]}  [TAR]   ${fg_bold[white]}$@${reset_color}"
 }
 
+# Generic helpers
+
+function has {
+	local elem="$1"
+
+	shift 1
+	for i in "$@"; do
+		[[ "$i" == "$elem" ]] && return 0
+	done
+
+	return 1
+}
+
 # Specialized helpers
 
 function subdirs {
@@ -215,6 +228,8 @@ function main {
 	write
 
 	write "CC := ${CC:-cc}"
+	write "AR := ${AR:-ar}"
+	write "RANLIB := ${RANLIB:-ranlib}"
 	write "CFLAGS := ${CFLAGS}"
 	write "LDFLAGS := ${LDFLAGS}"
 	write
@@ -234,9 +249,17 @@ function main {
 		write "\n\t@:\n"
 	fi
 
+	typeset -l -a exported_rules
 	local target_index=1
 	while (($target_index <= ${#targets[@]})); do
 		local target="${targets[$target_index]}"
+
+		if has "${target}" "${exported_rules[@]}"; then
+			((target_index++))
+			continue
+		else
+			exported_rules+=("$target")
+		fi
 
 		typeset -a src
 		src=($(echo ${sources[$target]}))
