@@ -2,6 +2,7 @@
 function library.build {
 	write -n "${target}: ${target}.so ${target}.a"
 	write
+	write "\t@:"
 
 	targets+=("${target}.so" "${target}.a")
 
