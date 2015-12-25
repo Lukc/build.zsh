@@ -457,7 +457,7 @@ function main {
 	for VAR in CC CFLAGS LDFLAGS DESTDIR; do
 		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]}\${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
 	done
-	for VAR _ in ${prefixes}; do
+	for VAR __ in ${prefixes}; do
 		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]}\${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
 	done
 
