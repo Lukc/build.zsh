@@ -1,15 +1,23 @@
 
 function script.build {
+	typeset -l S
+
+	if [[ -n "${sources[$target]}" ]]; then
+		S="${sources[$target]}"
+	else
+		S="${target}.in"
+	fi
+
 	write -n "${target}:"
 
-	if [[ -e "${target}.in" ]]; then
-		write " ${target}.in"
+	if [[ -e "${S%% *}" ]]; then
+		write " $S"
 		write "\t@echo '$(SED "${target}")'"
 		write -n "\t${Q}sed -e '"
 		write -n "s&@LIBDIR@&\$(LIBDIR)&;"
 		write -n "s&@BINDIR@&\$(BINDIR)&;"
 		write -n "s&@SHAREDIR@&\$(SHAREDIR)&;"
-		write    "' '${target}.in' > '${target}'"
+		write    "' $S > '${target}'"
 		write "\t${Q}chmod +x '${target}'"
 	fi
 
@@ -25,9 +33,17 @@ function script.uninstall {
 }
 
 function script.clean {
+	typeset -l S
+
+	if [[ -n "${sources[$target]}" ]]; then
+		S="${sources[$target]}"
+	else
+		S="${target}.in"
+	fi
+
 	write "${target}.clean:"
 
-	if [[ -e "${target}.in" ]]; then
+	if [[ -e "${S%% *}" ]]; then
 		write "\t@echo '$(RM ${target})'"
 		write "\t${Q}rm -f ${target}"
 	fi

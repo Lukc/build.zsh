@@ -28,7 +28,3 @@ function ofile.uninstall {
 	write
 }
 
-function ofile.clean {
-	binary.clean "$@"
-}
-

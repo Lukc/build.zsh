@@ -116,7 +116,9 @@ function subdirs {
 
 function get_distfiles {
 	for file in "${dist[@]}" $(echo ${sources[@]}) $(echo ${depends[@]}); do
-		echo "$file"
+		if [[ -z "${nodist[$file]}" ]]; then
+			echo "$file"
+		fi
 	done
 
 	typeset -a src
@@ -184,7 +186,7 @@ done
 
 function main {
 	typeset -a prefixes directories
-	typeset -A ldflags cflags sources type depends install auto
+	typeset -A ldflags cflags sources type depends install auto filename nodist
 
 	prefixes=(
 		PREFIX '/usr/local'
@@ -278,18 +280,28 @@ function main {
 			fi
 		fi
 
-		if exists "${type[$target]}.install"; then
-			${type[$target]}.install
+		if [[ "${installdir}" == "-" ]]; then
+			write "${target}.install:"
+			write ""
 		else
-			if [[ -z "${installdir}" ]]; then
-				error "No install[${type[${target}]}] and no default installation directory."
-				error "Your “install” rule will be broken!"
+			if exists "${type[$target]}.install"; then
+				${type[$target]}.install
 			else
-				write "${target}.install: \$(DESTDIR)${installdir}"
-				write "\t@echo '$(IN ${installdir}/${target})'"
-				write "\t@mkdir -p '\$(DESTDIR)/${installdir}'"
-				write "\t${Q}install -m755 $target \$(DESTDIR)${installdir}/$target"
-				write
+				if [[ -z "${installdir}" ]]; then
+					error "No install[${type[${target}]}] and no default installation directory."
+					error "Your “install” rule will be broken!"
+				else
+					local F="${filename[$target]}"
+					if [[ -z "$F" ]]; then
+						F="${target}"
+					fi
+
+					write "${target}.install: \$(DESTDIR)${installdir}"
+					write "\t@echo '$(IN ${installdir}/${filename})'"
+					write "\t@mkdir -p '\$(DESTDIR)/${installdir}'"
+					write "\t${Q}install -m755 $target \$(DESTDIR)${installdir}/$filename"
+					write
+				fi
 			fi
 		fi
 
@@ -375,14 +387,14 @@ function main {
 	(( ${#targets[@]} > 0 )) && {
 		for target in ${targets[@]}; do
 			write -n " ${target}.clean"
-			(
-				typeset -a src
-				src=($(echo ${sources[$target]}))
+			#(
+			#	typeset -a src
+			#	src=($(echo ${sources[$target]}))
 
-				for file in ${src[@]}; do
-					write -n " ${file%.c}.o.clean"
-				done
-			)
+			#	for file in ${src[@]}; do
+			#		write -n " ${file%.c}.o.clean"
+			#	done
+			#)
 		done
 	}
 	write
@@ -458,6 +470,9 @@ function main {
 		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]}\${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
 	done
 	for VAR __ in ${prefixes}; do
+		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]}\${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
+	done
+	for VAR __ in ${variables}; do
 		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]}\${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
 	done
 

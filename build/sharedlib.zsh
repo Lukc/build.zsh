@@ -59,10 +59,3 @@ function sharedlib.uninstall {
 	write
 }
 
-function sharedlib.clean {
-	write "${target}.clean:"
-	write "\t@echo '$(RM ${target})'"
-	write "\t${Q}rm -f ${target}"
-	write
-}
-

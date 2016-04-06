@@ -37,10 +37,3 @@ function staticlib.uninstall {
 	write
 }
 
-function staticlib.clean {
-	write "${target}.clean:"
-	write "\t@echo '$(RM ${target})'"
-	write "\t${Q}rm -f ${target}"
-	write
-}
-

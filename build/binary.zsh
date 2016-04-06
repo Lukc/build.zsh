@@ -21,7 +21,11 @@ function binary.build {
 
 function binary.install {
 	local install="${install[$target]:-\$(BINDIR)}"
-	local basename="$(basename "${target}")"
+	local basename="${filename[$target]}"
+	if [[ -z "$basename" ]]; then
+		basename="$(basename "${target}")"
+	fi
+
 	write "${target}.install: ${target}"
 	write "\t@echo '$(IN "${install}/${basename}")'"
 	write "\t${Q}mkdir -p '\$(DESTDIR)${install}'"
@@ -31,7 +35,11 @@ function binary.install {
 
 function binary.uninstall {
 	local install="${install[$target]:-\$(BINDIR)}"
-	local basename="$(basename "${target}")"
+	local basename="${filename[$target]}"
+	if [[ -z "$basename" ]]; then
+		basename="$(basename "${target}")"
+	fi
+
 	write "${target}.uninstall:"
 	write "\t@echo '$(RM ${install}/${basename})'"
 	write "\t${Q}rm -f '\$(DESTDIR)${install}/${basename}'"
@@ -39,7 +47,18 @@ function binary.uninstall {
 }
 
 function binary.clean {
-	write "${target}.clean:"
+	for target in ${targets[@]}; do
+		write -n " ${target}.clean"
+		(
+			typeset -a src
+			src=($(echo ${sources[$target]}))
+
+			for file in ${src[@]}; do
+				write -n " ${file%.c}.o.clean"
+			done
+		)
+	done
+
 	write "\t@echo '$(RM ${target})'"
 	write "\t${Q}rm -f ${target}"
 	write
