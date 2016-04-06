@@ -17,14 +17,13 @@ function moon.build {
 	if [[ -n "${S}" ]]; then
 		write " ${S}"
 		write "\t@echo '$(MOON "${target}")'"
-#		write "\t@echo '$(SED "${basename}")'"
-#		write -n "\t${Q}sed -e '"
-#		write -n "s&@LIBDIR@&\$(LIBDIR)&;"
-#		write -n "s&@BINDIR@&\$(BINDIR)&;"
-#		write -n "s&@SHAREDIR@&\$(SHAREDIR)&;"
-#		write    "' '${basename}.in' > '${basename}'"
-		write "\t${Q}moonc -p $S > '${target}'"
-#		write "\t${Q}chmod +x '${basename}'"
+		if [[ -z "${install[$target]}" ]]; then
+			write "\t${Q}echo '#!/usr/bin/env lua' > '${target}'"
+			write "\t${Q}moonc -p $S >> '${target}'"
+		else
+			write "\t${Q}moonc -p $S > '${target}'"
+			write "\t${Q}chmod +x '${basename}'"
+		fi
 	fi
 
 	write "\n"
