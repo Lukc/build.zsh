@@ -4,13 +4,13 @@ function script.build {
 
 	if [[ -n "${sources[$target]}" ]]; then
 		S="${sources[$target]}"
-	else
+	elif [[ -e "${target}.in" ]]; then
 		S="${target}.in"
 	fi
 
 	write -n "${target}:"
 
-	if [[ -e "${S%% *}" ]]; then
+	if [[ -n "${S}" ]]; then
 		write " $S"
 		write "\t@echo '$(SED "${target}")'"
 		write -n "\t${Q}sed -e '"

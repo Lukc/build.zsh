@@ -10,11 +10,11 @@ function moon.build {
 
 	if [[ -n "${sources[$target]}" ]]; then
 		S="${sources[$target]}"
-	else
+	elif [[ -e "${target%.lua}.moon" ]]; then
 		S="${target%.lua}.moon"
 	fi
 
-	if [[ -e "${S%% *}" ]]; then
+	if [[ -n "${S}" ]]; then
 		write " ${S}"
 		write "\t@echo '$(MOON "${target}")'"
 #		write "\t@echo '$(SED "${basename}")'"
