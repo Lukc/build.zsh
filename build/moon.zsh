@@ -20,9 +20,9 @@ function moon.build {
 		if [[ -z "${install[$target]}" ]]; then
 			write "\t${Q}echo '#!/usr/bin/env lua' > '${target}'"
 			write "\t${Q}moonc -p $S >> '${target}'"
+			write "\t${Q}chmod +x '${target}'"
 		else
 			write "\t${Q}moonc -p $S > '${target}'"
-			write "\t${Q}chmod +x '${basename}'"
 		fi
 	fi
 
