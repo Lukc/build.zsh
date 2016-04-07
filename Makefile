@@ -19,7 +19,7 @@ all: build.zsh build/binary.zsh build/library.zsh build/moon.zsh build/ofile.zsh
 
 build.zsh: build.zsh.in
 	@echo '[01;32m  [SED]   [01;37mbuild.zsh[00m'
-	$(Q)sed -e 's&@LIBDIR@&$(LIBDIR)&;s&@BINDIR@&$(BINDIR)&;s&@SHAREDIR@&$(SHAREDIR)&;' 'build.zsh.in' > 'build.zsh'
+	$(Q)sed -e 's&@LIBDIR@&$(LIBDIR)&;s&@BINDIR@&$(BINDIR)&;s&@SHAREDIR@&$(SHAREDIR)&;' build.zsh.in > 'build.zsh'
 	$(Q)chmod +x 'build.zsh'
 
 
