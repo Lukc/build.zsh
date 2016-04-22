@@ -314,13 +314,18 @@ function main {
 			write
 		fi
 
-		if exists "${type[$target]}.uninstall"; then
-			${type[$target]}.uninstall
-		else
+		if [[ "${installdir}" == "-" ]]; then
 			write "${target}.uninstall:"
-			write "\t@echo '$(RM "${installdir}/${target}")'"
-			write "\t${Q}rm -f '\$(DESTDIR)${installdir}/${target}'"
-			write
+			write ""
+		else
+			if exists "${type[$target]}.uninstall"; then
+				${type[$target]}.uninstall
+			else
+				write "${target}.uninstall:"
+				write "\t@echo '$(RM "${installdir}/${target}")'"
+				write "\t${Q}rm -f '\$(DESTDIR)${installdir}/${target}'"
+				write
+			fi
 		fi
 
 		if exists "${type[$target]}.test"; then
