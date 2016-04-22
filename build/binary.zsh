@@ -47,16 +47,11 @@ function binary.uninstall {
 }
 
 function binary.clean {
-	for target in ${targets[@]}; do
-		write -n " ${target}.clean"
-		(
-			typeset -a src
-			src=($(echo ${sources[$target]}))
+	write -n "${target}.clean: "
+	src=($(echo ${sources[$target]}))
 
-			for file in ${src[@]}; do
-				write -n " ${file%.c}.o.clean"
-			done
-		)
+	for file in ${src[@]}; do
+		write -n " ${file%.c}.o.clean"
 	done
 
 	write "\t@echo '$(RM ${target})'"
