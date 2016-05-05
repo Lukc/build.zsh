@@ -53,6 +53,7 @@ function binary.clean {
 	for file in ${src[@]}; do
 		write -n " ${file%.c}.o.clean"
 	done
+	write
 
 	write "\t@echo '$(RM ${target})'"
 	write "\t${Q}rm -f ${target}"
