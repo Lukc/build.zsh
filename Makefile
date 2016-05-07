@@ -15,7 +15,7 @@ LDFLAGS :=
 
 Q := @
 
-all: build.zsh build/binary.zsh build/library.zsh build/moon.zsh build/ofile.zsh build/script.zsh build/sharedlib.zsh build/staticlib.zsh
+all: build.zsh build/binary.zsh build/crystal.zsh build/library.zsh build/moon.zsh build/ofile.zsh build/script.zsh build/sharedlib.zsh build/staticlib.zsh
 
 build.zsh: build.zsh.in
 	@echo '[01;32m  [SED]   [01;37mbuild.zsh[00m'
@@ -48,6 +48,19 @@ build/binary.zsh.clean:
 build/binary.zsh.uninstall:
 	@echo '[01;37m  [RM]    [01;37m$(SHAREDIR)/build.zsh/binary.zsh[00m'
 	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/binary.zsh'
+
+build/crystal.zsh:
+
+build/crystal.zsh.install: build/crystal.zsh
+	@echo '[01;31m  [IN]    [01;37m$(SHAREDIR)/build.zsh/crystal.zsh[00m'
+	$(Q)mkdir -p '$(DESTDIR)$(SHAREDIR)/build.zsh'
+	$(Q)install -m0755 build/crystal.zsh $(DESTDIR)$(SHAREDIR)/build.zsh/crystal.zsh
+
+build/crystal.zsh.clean:
+
+build/crystal.zsh.uninstall:
+	@echo '[01;37m  [RM]    [01;37m$(SHAREDIR)/build.zsh/crystal.zsh[00m'
+	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/crystal.zsh'
 
 build/library.zsh:
 
@@ -142,12 +155,12 @@ $(DESTDIR)$(SHAREDIR):
 $(DESTDIR)$(INCLUDEDIR):
 	@echo '[01;35m  [DIR]   [01;37m$(INCLUDEDIR)[00m'
 	$(Q)mkdir -p $(DESTDIR)$(INCLUDEDIR)
-install: subdirs.install build.zsh.install build/binary.zsh.install build/library.zsh.install build/moon.zsh.install build/ofile.zsh.install build/script.zsh.install build/sharedlib.zsh.install build/staticlib.zsh.install
+install: subdirs.install build.zsh.install build/binary.zsh.install build/crystal.zsh.install build/library.zsh.install build/moon.zsh.install build/ofile.zsh.install build/script.zsh.install build/sharedlib.zsh.install build/staticlib.zsh.install
 	@:
 
 subdirs.install:
 
-uninstall: subdirs.uninstall build.zsh.uninstall build/binary.zsh.uninstall build/library.zsh.uninstall build/moon.zsh.uninstall build/ofile.zsh.uninstall build/script.zsh.uninstall build/sharedlib.zsh.uninstall build/staticlib.zsh.uninstall
+uninstall: subdirs.uninstall build.zsh.uninstall build/binary.zsh.uninstall build/crystal.zsh.uninstall build/library.zsh.uninstall build/moon.zsh.uninstall build/ofile.zsh.uninstall build/script.zsh.uninstall build/sharedlib.zsh.uninstall build/staticlib.zsh.uninstall
 	@:
 
 subdirs.uninstall:
@@ -157,7 +170,7 @@ test: all subdirs subdirs.test
 
 subdirs.test:
 
-clean: build.zsh.clean build/binary.zsh.clean build/library.zsh.clean build/moon.zsh.clean build/ofile.zsh.clean build/script.zsh.clean build/sharedlib.zsh.clean build/staticlib.zsh.clean
+clean: build.zsh.clean build/binary.zsh.clean build/crystal.zsh.clean build/library.zsh.clean build/moon.zsh.clean build/ofile.zsh.clean build/script.zsh.clean build/sharedlib.zsh.clean build/staticlib.zsh.clean
 
 distclean: clean
 
@@ -173,6 +186,7 @@ $(PACKAGE)-$(VERSION).tar.gz: distdir
 	@echo '[01;33m  [TAR]   [01;37m$(PACKAGE)-$(VERSION).tar.gz[00m'
 	$(Q)tar czf $(PACKAGE)-$(VERSION).tar.gz \
 		$(PACKAGE)-$(VERSION)/build/binary.zsh \
+		$(PACKAGE)-$(VERSION)/build/crystal.zsh \
 		$(PACKAGE)-$(VERSION)/build/library.zsh \
 		$(PACKAGE)-$(VERSION)/build/moon.zsh \
 		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
@@ -187,6 +201,7 @@ $(PACKAGE)-$(VERSION).tar.xz: distdir
 	@echo '[01;33m  [TAR]   [01;37m$(PACKAGE)-$(VERSION).tar.xz[00m'
 	$(Q)tar cJf $(PACKAGE)-$(VERSION).tar.xz \
 		$(PACKAGE)-$(VERSION)/build/binary.zsh \
+		$(PACKAGE)-$(VERSION)/build/crystal.zsh \
 		$(PACKAGE)-$(VERSION)/build/library.zsh \
 		$(PACKAGE)-$(VERSION)/build/moon.zsh \
 		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
@@ -201,6 +216,7 @@ $(PACKAGE)-$(VERSION).tar.bz2: distdir
 	@echo '[01;33m  [TAR]   [01;37m$(PACKAGE)-$(VERSION).tar.bz2[00m'
 	$(Q)tar cjf $(PACKAGE)-$(VERSION).tar.bz2 \
 		$(PACKAGE)-$(VERSION)/build/binary.zsh \
+		$(PACKAGE)-$(VERSION)/build/crystal.zsh \
 		$(PACKAGE)-$(VERSION)/build/library.zsh \
 		$(PACKAGE)-$(VERSION)/build/moon.zsh \
 		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
