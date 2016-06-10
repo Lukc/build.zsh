@@ -465,34 +465,34 @@ function main {
 		uninstall  "Deinstalls the project."
 	)
 	for rule message in ${help[@]}; do
-		printf "	@echo '${reset_color}    - ${fg_bold[green]}%-14s${fg[white]}$message${reset_color}'\n" \
+		printf "	@echo '${reset_color}    - ${fg_bold[green]}%-14s${fg[white]} $message${reset_color}'\n" \
 			"$rule" >> $Makefile
 	done
 
 	write "	@echo ''"
 	write "	@echo '${fg_bold[white]}CLI-modifiable variables:${reset_color}'"
 	for VAR in CC CFLAGS LDFLAGS DESTDIR; do
-		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]}\${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
+		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]} \${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
 	done
 	for VAR __ in ${prefixes}; do
-		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]}\${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
+		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]} \${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
 	done
 	for VAR __ in ${variables}; do
-		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]}\${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
+		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]} \${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
 	done
 
 	write "	@echo ''"
 	write "	@echo '${fg_bold[white]}Project targets: ${reset_color}'"
 	for T in ${targets[@]}; do
 		if [[ "${auto[$T]}" != true ]]; then
-			printf "	@echo '    - ${fg_bold[yellow]}%-14s${fg[white]}${type[$T]}${reset_color}'\n" "$T" >> $Makefile
+			printf "	@echo '    - ${fg_bold[yellow]}%-14s${fg[white]} ${type[$T]}${reset_color}'\n" "$T" >> $Makefile
 		fi
 	done
 
 	write "	@echo ''"
 	write "	@echo '${fg_bold[white]}Makefile options:${reset_color}'"
-	printf "	@echo '    - %-14s$gnu'\n"    "gnu:"    >> $Makefile
-	printf "	@echo '    - %-14s$colors'\n" "colors:" >> $Makefile
+	printf "	@echo '    - %-14s $gnu'\n"    "gnu:"    >> $Makefile
+	printf "	@echo '    - %-14s $colors'\n" "colors:" >> $Makefile
 
 	write "	@echo ''"
 	write "	@echo '${fg_bold[white]}Rebuild the Makefile with:${reset_color}'"
