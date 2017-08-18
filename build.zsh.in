@@ -34,35 +34,35 @@ function write {
 }
 
 function CC {
-	echo "${fg_bold[blue]}  [CC]    ${fg_bold[white]}$@${reset_color}"
+	echo "${fg_bold[blue]}  CC >    ${fg_bold[white]}$@${reset_color}"
 }
 
 function LD {
-	echo "${fg_bold[green]}  [LD]    ${fg_bold[white]}$@${reset_color}"
+	echo "${fg_bold[green]}  LD >    ${fg_bold[white]}$@${reset_color}"
 }
 
 function IN {
-	echo "${fg_bold[red]}  [IN]    ${fg_bold[white]}$@${reset_color}"
+	echo "${fg_bold[red]}  IN >    ${fg_bold[white]}$@${reset_color}"
 }
 
 function LN {
-	echo "${fg_bold[yellow]}  [LN]    ${fg_bold[white]}$@${reset_color}"
+	echo "${fg_bold[yellow]}  LN >    ${fg_bold[white]}$@${reset_color}"
 }
 
 function RM {
-	echo "${fg_bold[white]}  [RM]    ${fg_bold[white]}$@${reset_color}"
+	echo "${fg_bold[white]}  RM >    ${fg_bold[white]}$@${reset_color}"
 }
 
 function SED {
-	echo "${fg_bold[green]}  [SED]   ${fg_bold[white]}$@${reset_color}"
+	echo "${fg_bold[green]}  SED >   ${fg_bold[white]}$@${reset_color}"
 }
 
 function DIR {
-	echo "${fg_bold[magenta]}  [DIR]   ${fg_bold[white]}$@${reset_color}"
+	echo "${fg_bold[magenta]}  DIR >   ${fg_bold[white]}$@${reset_color}"
 }
 
 function TAR {
-	echo "${fg_bold[yellow]}  [TAR]   ${fg_bold[white]}$@${reset_color}"
+	echo "${fg_bold[yellow]}  TAR >   ${fg_bold[white]}$@${reset_color}"
 }
 
 # Generic helpers
