@@ -194,6 +194,7 @@ function main {
 		LIBDIR '$(PREFIX)/lib'
 		SHAREDIR '$(PREFIX)/share'
 		INCLUDEDIR '$(PREFIX)/include'
+		MANDIR '$(SHAREDIR)/man'
 	)
 
 	if [[ -f project.zsh && -r project.zsh ]]; then
