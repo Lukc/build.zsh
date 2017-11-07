@@ -187,6 +187,7 @@ done
 function main {
 	typeset -a prefixes directories
 	typeset -A ldflags cflags sources type depends install auto filename nodist
+	typeset -a tests
 
 	prefixes=(
 		PREFIX '/usr/local'
@@ -380,10 +381,14 @@ function main {
 			write -n " ${target}.test"
 		fi
 	done
-	for target in ${tests[@]}; do
-		write -n " ${target}"
-	done
-	write "\n\t@:\n"
+	if (( ${#tests[@]} > 0 )); then
+		write
+		for test in ${tests[@]}; do
+			write "\t${Q}$test"
+		done
+	else
+		write "\n\t@:\n"
+	fi
 
 	write "subdirs.test:"
 	subdirs test
