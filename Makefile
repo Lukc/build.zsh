@@ -16,7 +16,7 @@ LDFLAGS :=
 
 Q := @
 
-all: build.zsh build/binary.zsh build/crystal.zsh build/library.zsh build/man.zsh build/moon.zsh build/ofile.zsh build/script.zsh build/sharedlib.zsh build/staticlib.zsh
+all: build.zsh build/binary.zsh build/crystal.zsh build/library.zsh build/man.zsh build/moon.zsh build/ofile.zsh build/script.zsh build/shards.zsh build/sharedlib.zsh build/staticlib.zsh
 	@:
 
 build.zsh: build.zsh.in
@@ -129,6 +129,19 @@ build/script.zsh.uninstall:
 	@echo '  RM >    $(SHAREDIR)/build.zsh/script.zsh'
 	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/script.zsh'
 
+build/shards.zsh:
+
+build/shards.zsh.install: build/shards.zsh
+	@echo '  IN >    $(SHAREDIR)/build.zsh/shards.zsh'
+	$(Q)mkdir -p '$(DESTDIR)$(SHAREDIR)/build.zsh'
+	$(Q)install -m0755 build/shards.zsh $(DESTDIR)$(SHAREDIR)/build.zsh/shards.zsh
+
+build/shards.zsh.clean:
+
+build/shards.zsh.uninstall:
+	@echo '  RM >    $(SHAREDIR)/build.zsh/shards.zsh'
+	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/shards.zsh'
+
 build/sharedlib.zsh:
 
 build/sharedlib.zsh.install: build/sharedlib.zsh
@@ -173,12 +186,12 @@ $(DESTDIR)$(INCLUDEDIR):
 $(DESTDIR)$(MANDIR):
 	@echo '  DIR >   $(MANDIR)'
 	$(Q)mkdir -p $(DESTDIR)$(MANDIR)
-install: subdirs.install build.zsh.install build/binary.zsh.install build/crystal.zsh.install build/library.zsh.install build/man.zsh.install build/moon.zsh.install build/ofile.zsh.install build/script.zsh.install build/sharedlib.zsh.install build/staticlib.zsh.install
+install: subdirs.install build.zsh.install build/binary.zsh.install build/crystal.zsh.install build/library.zsh.install build/man.zsh.install build/moon.zsh.install build/ofile.zsh.install build/script.zsh.install build/shards.zsh.install build/sharedlib.zsh.install build/staticlib.zsh.install
 	@:
 
 subdirs.install:
 
-uninstall: subdirs.uninstall build.zsh.uninstall build/binary.zsh.uninstall build/crystal.zsh.uninstall build/library.zsh.uninstall build/man.zsh.uninstall build/moon.zsh.uninstall build/ofile.zsh.uninstall build/script.zsh.uninstall build/sharedlib.zsh.uninstall build/staticlib.zsh.uninstall
+uninstall: subdirs.uninstall build.zsh.uninstall build/binary.zsh.uninstall build/crystal.zsh.uninstall build/library.zsh.uninstall build/man.zsh.uninstall build/moon.zsh.uninstall build/ofile.zsh.uninstall build/script.zsh.uninstall build/shards.zsh.uninstall build/sharedlib.zsh.uninstall build/staticlib.zsh.uninstall
 	@:
 
 subdirs.uninstall:
@@ -188,7 +201,7 @@ test: all subdirs subdirs.test
 
 subdirs.test:
 
-clean: build.zsh.clean build/binary.zsh.clean build/crystal.zsh.clean build/library.zsh.clean build/man.zsh.clean build/moon.zsh.clean build/ofile.zsh.clean build/script.zsh.clean build/sharedlib.zsh.clean build/staticlib.zsh.clean
+clean: build.zsh.clean build/binary.zsh.clean build/crystal.zsh.clean build/library.zsh.clean build/man.zsh.clean build/moon.zsh.clean build/ofile.zsh.clean build/script.zsh.clean build/shards.zsh.clean build/sharedlib.zsh.clean build/staticlib.zsh.clean
 
 distclean: clean
 
@@ -210,6 +223,7 @@ $(PACKAGE)-$(VERSION).tar.gz: distdir
 		$(PACKAGE)-$(VERSION)/build/moon.zsh \
 		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
 		$(PACKAGE)-$(VERSION)/build/script.zsh \
+		$(PACKAGE)-$(VERSION)/build/shards.zsh \
 		$(PACKAGE)-$(VERSION)/build/sharedlib.zsh \
 		$(PACKAGE)-$(VERSION)/build/staticlib.zsh \
 		$(PACKAGE)-$(VERSION)/build.zsh.in \
@@ -227,6 +241,7 @@ $(PACKAGE)-$(VERSION).tar.xz: distdir
 		$(PACKAGE)-$(VERSION)/build/moon.zsh \
 		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
 		$(PACKAGE)-$(VERSION)/build/script.zsh \
+		$(PACKAGE)-$(VERSION)/build/shards.zsh \
 		$(PACKAGE)-$(VERSION)/build/sharedlib.zsh \
 		$(PACKAGE)-$(VERSION)/build/staticlib.zsh \
 		$(PACKAGE)-$(VERSION)/build.zsh.in \
@@ -244,6 +259,7 @@ $(PACKAGE)-$(VERSION).tar.bz2: distdir
 		$(PACKAGE)-$(VERSION)/build/moon.zsh \
 		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
 		$(PACKAGE)-$(VERSION)/build/script.zsh \
+		$(PACKAGE)-$(VERSION)/build/shards.zsh \
 		$(PACKAGE)-$(VERSION)/build/sharedlib.zsh \
 		$(PACKAGE)-$(VERSION)/build/staticlib.zsh \
 		$(PACKAGE)-$(VERSION)/build.zsh.in \
@@ -282,6 +298,7 @@ help:
 	@echo '    - build/moon.zsh script'
 	@echo '    - build/ofile.zsh script'
 	@echo '    - build/script.zsh script'
+	@echo '    - build/shards.zsh script'
 	@echo '    - build/sharedlib.zsh script'
 	@echo '    - build/staticlib.zsh script'
 	@echo ''
