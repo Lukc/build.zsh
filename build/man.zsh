@@ -11,7 +11,7 @@ function man.build {
 	write -n "${target}:"
 
 	if [[ -n "${S}" ]]; then
-		write " $S"
+		write " $S $(dirname $target)"
 		write "\t@echo '$(SED "${target}" | sed 's|SED|MAN|')'"
 		write "\t${Q}pandoc -s --from markdown --to man '$S' -o '${target}'"
 	fi

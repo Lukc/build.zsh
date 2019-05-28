@@ -4,7 +4,7 @@ function binary.build {
 	for i in ${src[@]}; do
 		write -n " ${i%.*}.o"
 	done
-	write " ${depends[$target]}"
+	write " ${depends[$target]} $(dirname $target)"
 	write "\t@echo '$(LD ${target})'"
 	write -n "\t$Q\$(CC) -o ${target} \$(LDFLAGS)"
 	write -n " ${src[@]//.c/.o}"

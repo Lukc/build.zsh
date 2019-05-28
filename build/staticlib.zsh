@@ -4,7 +4,7 @@ function staticlib.build {
 	for i in ${src[@]} ${depends[@]}; do
 		write -n " ${i%.c}.o"
 	done
-	write " ${depends[$target]}"
+	write " ${depends[$target]} $(dirname $target)"
 	write "\t@echo '$(LD ${target})'"
 	write -n "\t$Q\$(AR) rc '${target}'"
 	write    " ${src[@]//.c/.o}"

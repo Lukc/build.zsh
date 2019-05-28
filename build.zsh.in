@@ -337,6 +337,19 @@ function main {
 		((target_index++))
 	done
 
+	typeset -l -a target_directories
+	for target in "${targets[@]}"; do
+		directory="${target%/*}"
+		if [[ "$target" =~ .*/ ]] && ! has "${directory}" "${target_directories[@]}"; then
+			target_directories+=(${directory})
+		fi
+	done
+
+	for dir in ${target_directories[@]}; do
+		write "${dir}:"
+		write "\t${Q}mkdir -p ${dir}"
+	done
+
 	for dir in ${directories[@]}; do
 		write "\$(DESTDIR)${dir}:"
 		write "\t@echo '$(DIR ${dir})'"

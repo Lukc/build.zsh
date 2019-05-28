@@ -10,7 +10,7 @@ function header.install {
 		basename="$(basename "${target}")"
 	fi
 
-	write "${target}.install: ${target}"
+	write "${target}.install: ${target} $(dirname $target)"
 	write "\t@echo '$(IN "${install}/${basename}")'"
 	write "\t${Q}mkdir -p '\$(DESTDIR)${install}'"
 	write "\t${Q}install -m0644 ${target} \$(DESTDIR)${install}/${basename}"
