@@ -1,7 +1,7 @@
 
 function crystal.build {
 	write "${target}: ${src[@]} ${depends[$target]}"
-	write "\t@echo '${fg_bold[magenta]}  [CR]    ${fg_bold[white]}$target${reset_color}'"
+	write "\t@echo '${fg_bold[magenta]}  CR >    ${fg_bold[white]}$target${reset_color}'"
 	write "\t${Q}crystal ${src[@]} -o '${target}'"
 
 	write "\n"
@@ -16,7 +16,10 @@ function crystal.uninstall {
 }
 
 function crystal.clean {
-	script.clean "$@"
+	write "${target}.clean:"
+	write "\t@echo '$(RM ${target})'"
+	write "\t${Q}rm -f ${target}"
+	write
 }
 
 function crystal.distfiles {
