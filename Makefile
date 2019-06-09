@@ -19,7 +19,7 @@ Q := @
 all: build.zsh build/binary.zsh build/crystal.zsh build/header.zsh build/library.zsh build/man.zsh build/moon.zsh build/ofile.zsh build/script.zsh build/sharedlib.zsh build/staticlib.zsh
 	@:
 
-build.zsh: build.zsh.in
+build.zsh: build.zsh.in .
 	@echo '  SED >   build.zsh'
 	$(Q)sed -e 's&@LIBDIR@&$(LIBDIR)&;s&@BINDIR@&$(BINDIR)&;s&@SHAREDIR@&$(SHAREDIR)&;' build.zsh.in > 'build.zsh'
 	$(Q)chmod +x 'build.zsh'
@@ -168,6 +168,8 @@ build/staticlib.zsh.uninstall:
 	@echo '  RM >    $(SHAREDIR)/build.zsh/staticlib.zsh'
 	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/staticlib.zsh'
 
+build:
+	$(Q)mkdir -p build
 $(DESTDIR)$(PREFIX):
 	@echo '  DIR >   $(PREFIX)'
 	$(Q)mkdir -p $(DESTDIR)$(PREFIX)

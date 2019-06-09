@@ -172,6 +172,14 @@ function duplicated {
 	return 1
 }
 
+function dirdep {
+	dirname="$(dirname "$1")"
+
+	if [[ "$dirname" != "." ]]; then
+		echo "$dirname"
+	fi
+}
+
 for dir in "@SHAREDIR@/build.zsh" ./build; do
 	[[ -d "$dir" ]] && {
 		for i in "$dir"/*.zsh; do

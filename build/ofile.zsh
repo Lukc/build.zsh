@@ -1,7 +1,7 @@
 
 function ofile.build {
 	local dirname="$(dirname "$target")"
-	write -n "${target}: ${target%.o}.c $(dirname $target)"
+	write -n "${target}: ${target%.o}.c $(dirdep $target)"
 
 	sed '/^#include "/!d;s/^#include "//;s/"$//' "${target%.o}.c" | \
 	while read h; do

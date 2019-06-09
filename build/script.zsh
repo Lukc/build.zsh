@@ -11,7 +11,7 @@ function script.build {
 	write -n "${target}:"
 
 	if [[ -n "${S}" ]]; then
-		write " $S $(dirname $target)"
+		write " $S $(dirdep $target)"
 		write "\t@echo '$(SED "${target}")'"
 		write -n "\t${Q}sed -e '"
 		write -n "s&@LIBDIR@&\$(LIBDIR)&;"
