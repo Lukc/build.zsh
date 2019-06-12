@@ -14,9 +14,9 @@ function script.build {
 		write " $S $(dirdep $target)"
 		write "\t@echo '$(SED "${target}")'"
 		write -n "\t${Q}sed -e '"
-		write -n "s&@LIBDIR@&\$(LIBDIR)&;"
-		write -n "s&@BINDIR@&\$(BINDIR)&;"
-		write -n "s&@SHAREDIR@&\$(SHAREDIR)&;"
+		for variable value in ${prefixes[@]} ${variables[@]}; do
+			write -n "s&@${variable}@&\$(${variable})&;"
+		done
 		write    "' $S > '${target}'"
 		write "\t${Q}chmod +x '${target}'"
 	fi
