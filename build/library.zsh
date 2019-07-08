@@ -1,6 +1,6 @@
 
 function library.build {
-	write -n "${target}: ${target}.so ${target}.a $(dirname $target)"
+	write -n "${target}: ${target}.so ${target}.a $(dirdep $target)"
 	write
 	write "\t@:"
 

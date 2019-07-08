@@ -15,7 +15,7 @@ function moon.build {
 	fi
 
 	if [[ -n "${S}" ]]; then
-		write " ${S} $(dirname $target)"
+		write " ${S} $(dirdep $target)"
 		write "\t@echo '$(MOON "${target}")'"
 		if [[ -z "${install[$target]}" ]]; then
 			write "\t${Q}echo '#!/usr/bin/env lua' > '${target}'"
