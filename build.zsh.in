@@ -174,10 +174,20 @@ function duplicated {
 
 function dirdep {
 	dirname="$(dirname "$1")"
+	local sources=(${(@s/ /)2})
+	local depends=(${(@s/ /)3})
 
-	if [[ "$dirname" != "." ]]; then
-		echo "$dirname"
+	for dep in ${sources[@]} ${depends[@]}; do
+		if [[ "$(dirname $dep)" == "$dirname" ]]; then
+			return 0
+		fi
+	done
+
+	if [[ "$dirname" == "." ]]; then
+		return 0
 	fi
+
+	echo "$dirname"
 }
 
 for dir in "@SHAREDIR@/build.zsh" ./build; do
