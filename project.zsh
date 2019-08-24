@@ -1,6 +1,6 @@
 
 package=build_zsh
-version=0.2.2
+version=0.3.0
 
 targets=(build.zsh)
 type[build.zsh]=script
