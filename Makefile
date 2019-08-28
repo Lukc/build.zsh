@@ -1,5 +1,5 @@
 PACKAGE = 'build_zsh'
-VERSION = '0.2.2'
+VERSION = '0.3.1'
 
 PREFIX := /usr/local
 BINDIR := $(PREFIX)/bin
@@ -19,9 +19,9 @@ Q := @
 all: build.zsh build/binary.zsh build/crystal.zsh build/header.zsh build/library.zsh build/man.zsh build/moon.zsh build/ofile.zsh build/script.zsh build/sharedlib.zsh build/staticlib.zsh
 	@:
 
-build.zsh: build.zsh.in .
+build.zsh: build.zsh.in 
 	@echo '  SED >   build.zsh'
-	$(Q)sed -e 's&@LIBDIR@&$(LIBDIR)&;s&@BINDIR@&$(BINDIR)&;s&@SHAREDIR@&$(SHAREDIR)&;' build.zsh.in > 'build.zsh'
+	$(Q)sed -e 's&@PREFIX@&$(PREFIX)&;s&@BINDIR@&$(BINDIR)&;s&@LIBDIR@&$(LIBDIR)&;s&@SHAREDIR@&$(SHAREDIR)&;s&@INCLUDEDIR@&$(INCLUDEDIR)&;s&@MANDIR@&$(MANDIR)&;' build.zsh.in > 'build.zsh'
 	$(Q)chmod +x 'build.zsh'
 
 
@@ -269,7 +269,7 @@ $(PACKAGE)-$(VERSION).tar.bz2: distdir
 		$(PACKAGE)-$(VERSION)/Makefile
 
 help:
-	@echo ' :: build_zsh-0.2.2'
+	@echo ' :: build_zsh-0.3.1'
 	@echo ''
 	@echo 'Generic targets:'
 	@echo '    - help           Prints this help message.'
