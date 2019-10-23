@@ -29,7 +29,7 @@ function binary.install {
 	write "${target}.install: ${target}"
 	write "\t@echo '$(IN "${install}/${basename}")'"
 	write "\t${Q}mkdir -p '\$(DESTDIR)${install}'"
-	write "\t${Q}install -m0755 ${target} \$(DESTDIR)${install}/${basename}"
+	write "\t${Q}install -m${chmod[$target]:-0755} ${target} \$(DESTDIR)${install}/${basename}"
 	write
 }
 
