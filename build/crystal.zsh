@@ -2,7 +2,7 @@
 function crystal.build {
 	write "${target}: ${src[@]} ${depends[$target]} $(dirdep $target)"
 	write "\t@echo '${fg_bold[magenta]}  CR >    ${fg_bold[white]}$target${reset_color}'"
-	write "\t${Q}crystal ${src[@]} -o '${target}'"
+	write "\t${Q}crystal build ${crflags[$target]:---release} \$(CRFLAGS) ${src[@]} -o '${target}'"
 
 	write "\n"
 }

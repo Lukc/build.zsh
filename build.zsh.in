@@ -204,7 +204,12 @@ done
 
 function main {
 	typeset -a prefixes directories
-	typeset -A ldflags cflags sources type depends install auto filename nodist
+
+	# FIXME: We may want those to be defined somewhere else.
+	typeset -A ldflags cflags crflags
+
+	typeset -A sources type depends install auto filename nodist
+
 	typeset -A chmod
 	typeset -a tests
 
