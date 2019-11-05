@@ -1,5 +1,5 @@
 PACKAGE = 'build_zsh'
-VERSION = '0.4.0'
+VERSION = '0.4.1'
 
 PREFIX := /usr/local
 BINDIR := $(PREFIX)/bin
@@ -285,7 +285,7 @@ $(PACKAGE)-$(VERSION).tar.bz2: distdir
 		$(PACKAGE)-$(VERSION)/Makefile
 
 help:
-	@echo ' :: build_zsh-0.4.0'
+	@echo ' :: build_zsh-0.4.1'
 	@echo ''
 	@echo 'Generic targets:'
 	@echo '    - help           Prints this help message.'
