@@ -1,8 +1,23 @@
 
+function crystal.prelude {
+	local has_crflags=false
+
+	for variable value in ${variables[@]}; do
+		if [[ "$variable" == "CRFLAGS" ]]; then
+			has_crflags=true
+			break
+		fi
+	done
+
+	if ! $has_crflags; then
+		variables+=(CRFLAGS "--release")
+	fi
+}
+
 function crystal.build {
 	write "${target}: ${src[@]} ${depends[$target]} $(dirdep $target)"
 	write "\t@echo '${fg_bold[magenta]}  CR >    ${fg_bold[white]}$target${reset_color}'"
-	write "\t${Q}crystal build ${crflags[$target]:---release} \$(CRFLAGS) ${src[@]} -o '${target}'"
+	write "\t${Q}crystal build ${crflags[$target]} \$(CRFLAGS) ${src[@]} -o '${target}'"
 
 	write "\n"
 }

@@ -231,6 +231,14 @@ function main {
 
 	: > $Makefile
 
+	for target in ${targets[@]}; do
+		local _type=${type[$target]}
+
+		if exists ${_type}.prelude; then
+			${_type}.prelude
+		fi
+	done
+
 	if [[ -n "$package" && -n "$version" ]]; then
 		export package version
 
