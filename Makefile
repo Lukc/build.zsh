@@ -16,7 +16,7 @@ LDFLAGS :=
 
 Q := @
 
-all: build.zsh build/binary.zsh build/crystal.zsh build/header.zsh build/library.zsh build/man.zsh build/moon.zsh build/ofile.zsh build/scdocman.zsh build/script.zsh build/sharedlib.zsh build/staticlib.zsh
+all: build.zsh build/binary.zsh build/crystal.zsh build/header.zsh build/library.zsh build/livescript.zsh build/man.zsh build/moon.zsh build/ofile.zsh build/sass.zsh build/scdocman.zsh build/script.zsh build/sharedlib.zsh build/staticlib.zsh
 	@:
 
 build.zsh: build.zsh.in 
@@ -90,6 +90,19 @@ build/library.zsh.uninstall:
 	@echo '  RM >    $(SHAREDIR)/build.zsh/library.zsh'
 	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/library.zsh'
 
+build/livescript.zsh:
+
+build/livescript.zsh.install: build/livescript.zsh
+	@echo '  IN >    $(SHAREDIR)/build.zsh/livescript.zsh'
+	$(Q)mkdir -p '$(DESTDIR)$(SHAREDIR)/build.zsh'
+	$(Q)install -m0755 build/livescript.zsh $(DESTDIR)$(SHAREDIR)/build.zsh/livescript.zsh
+
+build/livescript.zsh.clean:
+
+build/livescript.zsh.uninstall:
+	@echo '  RM >    $(SHAREDIR)/build.zsh/livescript.zsh'
+	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/livescript.zsh'
+
 build/man.zsh:
 
 build/man.zsh.install: build/man.zsh
@@ -128,6 +141,19 @@ build/ofile.zsh.clean:
 build/ofile.zsh.uninstall:
 	@echo '  RM >    $(SHAREDIR)/build.zsh/ofile.zsh'
 	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/ofile.zsh'
+
+build/sass.zsh:
+
+build/sass.zsh.install: build/sass.zsh
+	@echo '  IN >    $(SHAREDIR)/build.zsh/sass.zsh'
+	$(Q)mkdir -p '$(DESTDIR)$(SHAREDIR)/build.zsh'
+	$(Q)install -m0755 build/sass.zsh $(DESTDIR)$(SHAREDIR)/build.zsh/sass.zsh
+
+build/sass.zsh.clean:
+
+build/sass.zsh.uninstall:
+	@echo '  RM >    $(SHAREDIR)/build.zsh/sass.zsh'
+	$(Q)rm -f '$(DESTDIR)$(SHAREDIR)/build.zsh/sass.zsh'
 
 build/scdocman.zsh:
 
@@ -201,12 +227,12 @@ $(DESTDIR)$(INCLUDEDIR):
 $(DESTDIR)$(MANDIR):
 	@echo '  DIR >   $(MANDIR)'
 	$(Q)mkdir -p $(DESTDIR)$(MANDIR)
-install: subdirs.install build.zsh.install build/binary.zsh.install build/crystal.zsh.install build/header.zsh.install build/library.zsh.install build/man.zsh.install build/moon.zsh.install build/ofile.zsh.install build/scdocman.zsh.install build/script.zsh.install build/sharedlib.zsh.install build/staticlib.zsh.install
+install: subdirs.install build.zsh.install build/binary.zsh.install build/crystal.zsh.install build/header.zsh.install build/library.zsh.install build/livescript.zsh.install build/man.zsh.install build/moon.zsh.install build/ofile.zsh.install build/sass.zsh.install build/scdocman.zsh.install build/script.zsh.install build/sharedlib.zsh.install build/staticlib.zsh.install
 	@:
 
 subdirs.install:
 
-uninstall: subdirs.uninstall build.zsh.uninstall build/binary.zsh.uninstall build/crystal.zsh.uninstall build/header.zsh.uninstall build/library.zsh.uninstall build/man.zsh.uninstall build/moon.zsh.uninstall build/ofile.zsh.uninstall build/scdocman.zsh.uninstall build/script.zsh.uninstall build/sharedlib.zsh.uninstall build/staticlib.zsh.uninstall
+uninstall: subdirs.uninstall build.zsh.uninstall build/binary.zsh.uninstall build/crystal.zsh.uninstall build/header.zsh.uninstall build/library.zsh.uninstall build/livescript.zsh.uninstall build/man.zsh.uninstall build/moon.zsh.uninstall build/ofile.zsh.uninstall build/sass.zsh.uninstall build/scdocman.zsh.uninstall build/script.zsh.uninstall build/sharedlib.zsh.uninstall build/staticlib.zsh.uninstall
 	@:
 
 subdirs.uninstall:
@@ -216,7 +242,7 @@ test: all subdirs subdirs.test
 
 subdirs.test:
 
-clean: build.zsh.clean build/binary.zsh.clean build/crystal.zsh.clean build/header.zsh.clean build/library.zsh.clean build/man.zsh.clean build/moon.zsh.clean build/ofile.zsh.clean build/scdocman.zsh.clean build/script.zsh.clean build/sharedlib.zsh.clean build/staticlib.zsh.clean
+clean: build.zsh.clean build/binary.zsh.clean build/crystal.zsh.clean build/header.zsh.clean build/library.zsh.clean build/livescript.zsh.clean build/man.zsh.clean build/moon.zsh.clean build/ofile.zsh.clean build/sass.zsh.clean build/scdocman.zsh.clean build/script.zsh.clean build/sharedlib.zsh.clean build/staticlib.zsh.clean
 
 distclean: clean
 
@@ -235,9 +261,11 @@ $(PACKAGE)-$(VERSION).tar.gz: distdir
 		$(PACKAGE)-$(VERSION)/build/crystal.zsh \
 		$(PACKAGE)-$(VERSION)/build/header.zsh \
 		$(PACKAGE)-$(VERSION)/build/library.zsh \
+		$(PACKAGE)-$(VERSION)/build/livescript.zsh \
 		$(PACKAGE)-$(VERSION)/build/man.zsh \
 		$(PACKAGE)-$(VERSION)/build/moon.zsh \
 		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
+		$(PACKAGE)-$(VERSION)/build/sass.zsh \
 		$(PACKAGE)-$(VERSION)/build/scdocman.zsh \
 		$(PACKAGE)-$(VERSION)/build/script.zsh \
 		$(PACKAGE)-$(VERSION)/build/sharedlib.zsh \
@@ -254,9 +282,11 @@ $(PACKAGE)-$(VERSION).tar.xz: distdir
 		$(PACKAGE)-$(VERSION)/build/crystal.zsh \
 		$(PACKAGE)-$(VERSION)/build/header.zsh \
 		$(PACKAGE)-$(VERSION)/build/library.zsh \
+		$(PACKAGE)-$(VERSION)/build/livescript.zsh \
 		$(PACKAGE)-$(VERSION)/build/man.zsh \
 		$(PACKAGE)-$(VERSION)/build/moon.zsh \
 		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
+		$(PACKAGE)-$(VERSION)/build/sass.zsh \
 		$(PACKAGE)-$(VERSION)/build/scdocman.zsh \
 		$(PACKAGE)-$(VERSION)/build/script.zsh \
 		$(PACKAGE)-$(VERSION)/build/sharedlib.zsh \
@@ -273,9 +303,11 @@ $(PACKAGE)-$(VERSION).tar.bz2: distdir
 		$(PACKAGE)-$(VERSION)/build/crystal.zsh \
 		$(PACKAGE)-$(VERSION)/build/header.zsh \
 		$(PACKAGE)-$(VERSION)/build/library.zsh \
+		$(PACKAGE)-$(VERSION)/build/livescript.zsh \
 		$(PACKAGE)-$(VERSION)/build/man.zsh \
 		$(PACKAGE)-$(VERSION)/build/moon.zsh \
 		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
+		$(PACKAGE)-$(VERSION)/build/sass.zsh \
 		$(PACKAGE)-$(VERSION)/build/scdocman.zsh \
 		$(PACKAGE)-$(VERSION)/build/script.zsh \
 		$(PACKAGE)-$(VERSION)/build/sharedlib.zsh \
@@ -313,9 +345,11 @@ help:
 	@echo '    - build/crystal.zsh script'
 	@echo '    - build/header.zsh script'
 	@echo '    - build/library.zsh script'
+	@echo '    - build/livescript.zsh script'
 	@echo '    - build/man.zsh  script'
 	@echo '    - build/moon.zsh script'
 	@echo '    - build/ofile.zsh script'
+	@echo '    - build/sass.zsh script'
 	@echo '    - build/scdocman.zsh script'
 	@echo '    - build/script.zsh script'
 	@echo '    - build/sharedlib.zsh script'
