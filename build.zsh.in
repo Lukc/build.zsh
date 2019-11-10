@@ -534,9 +534,26 @@ function main {
 
 	write "	@echo ''"
 	write "	@echo '${fg_bold[white]}Project targets: ${reset_color}'"
+
+	# Computing how many characters should be reserved for the left part
+	# of those lines. The name of the target will be displayed in it.
+	local name_slot_size=14
+	for T in ${targets[@]}; do
+		if [[ "${auto[$T]}" == true ]]; then
+			continue
+		fi
+
+		if (( $#T > 22 )); then
+			name_slot_size=30
+			break
+		elif (( $#T > 14 )); then
+			name_slot_size=22
+		fi
+	done
+
 	for T in ${targets[@]}; do
 		if [[ "${auto[$T]}" != true ]]; then
-			printf "	@echo '    - ${fg_bold[yellow]}%-14s${fg[white]} ${type[$T]}${reset_color}'\n" "$T" >> $Makefile
+			printf "	@echo '    - ${fg_bold[yellow]}%-${name_slot_size}s${fg[white]} ${type[$T]}${reset_color}'\n" "$T" >> $Makefile
 		fi
 	done
 
