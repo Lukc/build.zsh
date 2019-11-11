@@ -149,7 +149,9 @@ get_distfiles () {
 			typeset -A sources depends
 
 			cd "$dir"
+			setopt unset warncreateglobal
 			. ./project.zsh
+			setopt nounset nowarncreateglobal
 			for file in $(get_distfiles); do
 				local file="${dir}/${file}"
 				while [[ "$file" =~ "\.\./" ]]; do
