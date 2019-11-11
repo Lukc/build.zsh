@@ -57,11 +57,12 @@ write   () print "$@" >> $Makefile
         case $1 {
             (--auto)      auto[$source]=true    ; shift   ;;
             (--install) install[$source]=$2     ; shift 2 ;;
-            (--chmod)     chmod[$source]=$2     ; shift 2 ;;
+            (--chmod)
+                warning --chmod is not implemented yet
+                chmod[$source]=$2     ; shift 2 ;;
         }
     }
 }
-
 
 # Makefiles’ output
 
@@ -157,7 +158,6 @@ get_distfiles () {
 				while [[ "$file" =~ "\.\./" ]]; do
 					file="${file/[a-z]*\/\.\.\//}"
 				done
-
 				echo "${file}"
 			done
 		)
