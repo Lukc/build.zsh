@@ -280,6 +280,7 @@ $(PACKAGE)-$(VERSION).tar.xz: distdir
 	@echo '  TAR >   $(PACKAGE)-$(VERSION).tar.xz'
 	$(Q)tar cJf $(PACKAGE)-$(VERSION).tar.xz ${DISTFILES}
 
+
 dist-bz2: $(PACKAGE)-$(VERSION).tar.bz2
 $(PACKAGE)-$(VERSION).tar.bz2: distdir
 	@echo '  TAR >   $(PACKAGE)-$(VERSION).tar.bz2'

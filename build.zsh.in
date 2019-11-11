@@ -46,6 +46,23 @@ warning () print -u2 "${fg_bold[yellow]}-- $@${reset_color}"
 error   () print -u2 "${fg_bold[red]}-- ERROR: $@${reset_color}"
 write   () print "$@" >> $Makefile
 
+@echo   () ...
+@script () @target script "$@"
+@target () {
+    local source=${2?source path}
+    type[$source]=${1?a known type (script, bin ...)}
+    shift 2
+    targets+=$source
+    while (( $# )) {
+        case $1 {
+            (--auto)      auto[$source]=true    ; shift   ;;
+            (--install) install[$source]=$2     ; shift 2 ;;
+            (--chmod)     chmod[$source]=$2     ; shift 2 ;;
+        }
+    }
+}
+
+
 # Makefiles’ output
 
 CC  () print  "${fg_bold[blue]}  CC >    ${fg_bold[white]}$@${reset_color}"
@@ -197,7 +214,6 @@ done
 # And so it begins
 ##
 
-
 main () {
 	local -a prefixes directories
 	# FIXME: We may want those to be defined somewhere else.
@@ -301,6 +317,7 @@ main () {
 		fi
 
 		local -a src=( ${=sources[$target]:-} )
+        # TODO: what to do ????
 		# (( $+install[$target] )) || die "no installation dir for $target"
 		local installdir=${install[$target]:-./}
 

@@ -2,15 +2,9 @@
 package=build_zsh
 version=0.4.1
 
-targets=(build.zsh)
-type[build.zsh]=script
+@script build.zsh
+for it (build/*.zsh)
+    @script $it --install '$(SHAREDIR)/build.zsh'
 
-for i in build/*.zsh; do
-	targets+=($i)
-	type[$i]=script
-	install[$i]='$(SHAREDIR)/build.zsh'
-#	auto[$i]=true
-done
-
-dist=(build/*.zsh build.zsh.in project.zsh Makefile)
+dist=( build/*.zsh build.zsh.in project.zsh Makefile )
 
