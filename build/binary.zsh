@@ -21,7 +21,7 @@ function binary.build {
 
 function binary.install {
 	local install="${install[$target]:-\$(BINDIR)}"
-	local basename="${filename[$target]}"
+	local basename="${filename[$target]:-}"
 	if [[ -z "$basename" ]]; then
 		basename="$(basename "${target}")"
 	fi
@@ -35,10 +35,7 @@ function binary.install {
 
 function binary.uninstall {
 	local install="${install[$target]:-\$(BINDIR)}"
-	local basename="${filename[$target]}"
-	if [[ -z "$basename" ]]; then
-		basename="$(basename "${target}")"
-	fi
+	local basename=${filename[$target]:-$target:t}
 
 	write "${target}.uninstall:"
 	write "\t@echo '$(RM ${install}/${basename})'"
@@ -48,7 +45,7 @@ function binary.uninstall {
 
 function binary.clean {
 	write -n "${target}.clean: "
-	src=($(echo ${sources[$target]}))
+	local src=( ${=sources[$target]:-} )
 
 	for file in ${src[@]}; do
 		write -n " ${file%.c}.o.clean"
