@@ -1,27 +1,20 @@
 
 function script.build {
-	typeset -l S
-
-	if [[ -n "${sources[$target]}" ]]; then
-		S="${sources[$target]}"
-	elif [[ -e "${target}.in" ]]; then
-		S="${target}.in"
-	fi
-
+	local -l S=${sources[$target]:-}
 	write -n "${target}:"
-
-	if [[ -n "${S}" ]]; then
-		write " $S $(dirdep $target)"
-		write "\t@echo '$(SED "${target}")'"
-		write -n "\t${Q}sed -e '"
-		for variable value in ${prefixes[@]} ${variables[@]}; do
-			write -n "s&@${variable}@&\$(${variable})&;"
-		done
-		write    "' $S > '${target}'"
-		write "\t${Q}chmod +x '${target}'"
-	fi
-
-	write "\n"
+	[[ -z $S ]] && S=($target.in(N))
+	[[ -z $S ]] && {
+		write "\n"
+		return
+	}
+	write " $S $(dirdep $target)"
+	write "\t@echo '$(SED "${target}")'"
+	write -n "\t${Q}sed -e '"
+	local variable value
+	for variable value ( $prefixes $variables )
+		write -n "s&@${variable}@&\$(${variable})&;"
+	write "' $S > '${target}'"
+	write "\t${Q}chmod +x '${target}'\n"
 }
 
 function script.install {
@@ -33,14 +26,7 @@ function script.uninstall {
 }
 
 function script.clean {
-	typeset -l S
-
-	if [[ -n "${sources[$target]}" ]]; then
-		S="${sources[$target]}"
-	else
-		S="${target}.in"
-	fi
-
+	typeset -l S=${sources[$target]:-$target.in}
 	write "${target}.clean:"
 
 	if [[ -e "${S%% *}" ]]; then

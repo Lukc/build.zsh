@@ -13,61 +13,71 @@
 # 	- Using a relative path in DESTDIR= *will* fail.
 #
 
-# Script output
+# stolen from uze.zsh
 
-function info {
-	echo "${fg_bold[green]}-- ${fg_bold[white]}$@${reset_color}"
-}
+setopt warncreateglobal nounset pipefail \
+    globstarshort extendedglob braceccl \
+    pathdirs rcquotes \
+    promptsubst promptbang promptpercent
+# autoload colors
+# colors
 
-function warning {
-	echo "${fg_bold[yellow]}-- $@${reset_color}" >&2
-}
+local -A  fg=(
+    white  ''
+    blue   ''
+)
 
-function error {
-	echo "${fg_bold[red]}-- ERROR: $@${reset_color}" >&2
+local -A  fg_bold=(
+    green  ''
+    blue   ''
+    white  ''
+    yellow ''
+    red    ''
+    magenta ''
+)
+
+local reset_color=''
+
+alias warn='() { local r=$?; print -u2 "$*"; return $r } "at $0 line $LINENO, warning:"'
+alias die='()  { local r=$?; print -u2 "$*"; exit $r   } "died at $0 line $LINENO:"'
+alias ...='{warn unimplemented; return 255}'
+info    () print -u2 "${fg_bold[green]}-- ${fg_bold[white]}$@${reset_color}"
+warning () print -u2 "${fg_bold[yellow]}-- $@${reset_color}"
+error   () print -u2 "${fg_bold[red]}-- ERROR: $@${reset_color}"
+write   () print "$@" >> $Makefile
+
+@echo   () ...
+@script () @target script "$@"
+@target () {
+    local source=${2?source path}
+    type[$source]=${1?a known type (script, bin ...)}
+    shift 2
+    targets+=$source
+    while (( $# )) {
+        case $1 {
+            (--auto)      auto[$source]=true    ; shift   ;;
+            (--install) install[$source]=$2     ; shift 2 ;;
+            (--chmod)
+                warning --chmod is not implemented yet
+                chmod[$source]=$2     ; shift 2 ;;
+        }
+    }
 }
 
 # Makefiles’ output
 
-function write {
-	echo "$@" >> $Makefile
-}
-
-function CC {
-	echo "${fg_bold[blue]}  CC >    ${fg_bold[white]}$@${reset_color}"
-}
-
-function LD {
-	echo "${fg_bold[green]}  LD >    ${fg_bold[white]}$@${reset_color}"
-}
-
-function IN {
-	echo "${fg_bold[red]}  IN >    ${fg_bold[white]}$@${reset_color}"
-}
-
-function LN {
-	echo "${fg_bold[yellow]}  LN >    ${fg_bold[white]}$@${reset_color}"
-}
-
-function RM {
-	echo "${fg_bold[white]}  RM >    ${fg_bold[white]}$@${reset_color}"
-}
-
-function SED {
-	echo "${fg_bold[green]}  SED >   ${fg_bold[white]}$@${reset_color}"
-}
-
-function DIR {
-	echo "${fg_bold[magenta]}  DIR >   ${fg_bold[white]}$@${reset_color}"
-}
-
-function TAR {
-	echo "${fg_bold[yellow]}  TAR >   ${fg_bold[white]}$@${reset_color}"
-}
+CC  () print  "${fg_bold[blue]}  CC >    ${fg_bold[white]}$@${reset_color}"
+LD  () print  "${fg_bold[green]}  LD >    ${fg_bold[white]}$@${reset_color}"
+IN  () print  "${fg_bold[red]}  IN >    ${fg_bold[white]}$@${reset_color}"
+LN  () print  "${fg_bold[yellow]}  LN >    ${fg_bold[white]}$@${reset_color}"
+RM  () print  "${fg_bold[white]}  RM >    ${fg_bold[white]}$@${reset_color}"
+SED () print  "${fg_bold[red]}  SED >   ${fg_bold[white]}$@${reset_color}"
+DIR () print  "${fg_bold[magenta]}  DIR >   ${fg_bold[white]}$@${reset_color}"
+TAR () print  "${fg_bold[yellow]}  TAR >   ${fg_bold[white]}$@${reset_color}"
 
 # Generic helpers
 
-function has {
+has () {
 	local elem="$1"
 
 	shift 1
@@ -80,7 +90,7 @@ function has {
 
 # Specialized helpers
 
-function subdirs {
+subdirs () {
 	for DIR in ${subdirs[@]}; do
 		if $gnu; then
 			write "\t@echo '   ${fg_bold[red]}>>     ${fg_bold[magenta]}`pwd`/${DIR}${reset_color}'"
@@ -114,9 +124,12 @@ function subdirs {
 	done
 }
 
-function get_distfiles {
+get_distfiles () {
+	# TODO: da crap ?
+	# nodist? ????
+	local file
 	for file in "${dist[@]}" $(echo ${sources[@]}) $(echo ${depends[@]}); do
-		if [[ -z "${nodist[$file]}" ]]; then
+		if [[ -z "${nodist[$file]:-}" ]]; then
 			echo "$file"
 		fi
 	done
@@ -137,24 +150,25 @@ function get_distfiles {
 			typeset -A sources depends
 
 			cd "$dir"
+			setopt unset warncreateglobal
 			. ./project.zsh
+			setopt nounset nowarncreateglobal
 			for file in $(get_distfiles); do
 				local file="${dir}/${file}"
 				while [[ "$file" =~ "\.\./" ]]; do
 					file="${file/[a-z]*\/\.\.\//}"
 				done
-
 				echo "${file}"
 			done
 		)
 	done
 }
 
-function exists {
+exists () {
 	[[ "$(whence -w ${1})" != "${1}: none" ]]
 }
 
-function duplicated {
+duplicated () {
 	local elem="$1"
 	local count=0
 	shift 1
@@ -172,10 +186,10 @@ function duplicated {
 	return 1
 }
 
-function dirdep {
-	dirname="$(dirname "$1")"
-	local sources=(${(@s/ /)2})
-	local depends=(${(@s/ /)3})
+dirdep () {
+	local dirname="$(dirname "$1")"
+	local sources=(${(@s/ /)2:-})
+	local depends=(${(@s/ /)3:-})
 
 	for dep in ${sources[@]} ${depends[@]}; do
 		if [[ "$(dirname $dep)" == "$dirname" ]]; then
@@ -202,16 +216,15 @@ done
 # And so it begins
 ##
 
-function main {
-	typeset -a prefixes directories
-
+main () {
+	local -a prefixes directories
 	# FIXME: We may want those to be defined somewhere else.
-	typeset -A ldflags cflags crflags
+	local -A ldflags cflags crflags
 
-	typeset -A sources type depends install auto filename nodist
-
-	typeset -A chmod
-	typeset -a tests
+	local -A sources type depends install auto filename nodist
+	local -A chmod
+	local -a tests targets dist variables all subdirs
+    local package version
 
 	prefixes=(
 		PREFIX '/usr/local'
@@ -231,13 +244,15 @@ function main {
 
 	: > $Makefile
 
-	for target in ${targets[@]}; do
-		local _type=${type[$target]}
+    () {
+        local t rule
+        for t {
+            rule=$type[$t].prelude
+            &>/dev/null whence $rule && $rule
+        }
+    } $targets
 
-		if exists ${_type}.prelude; then
-			${_type}.prelude
-		fi
-	done
+
 
 	if [[ -n "$package" && -n "$version" ]]; then
 		export package version
@@ -257,12 +272,14 @@ function main {
 	fi
 
 	# Got some issues of PATH being replaced by a value of $path…
+	local prefix _path
 	for prefix _path in ${prefixes[@]}; do
 		write "$prefix := $_path"
 	done
 
-	for var val in ${variables[@]}; do
-		write "$var := ${val}"
+	local k v
+	for k v in $variables; do
+		write "$k := $v"
 	done
 
 	write
@@ -270,17 +287,17 @@ function main {
 	write "CC := ${CC:-cc}"
 	write "AR := ${AR:-ar}"
 	write "RANLIB := ${RANLIB:-ranlib}"
-	write "CFLAGS := ${CFLAGS}"
-	write "LDFLAGS := ${LDFLAGS}"
+	write "CFLAGS := ${CFLAGS:-}"
+	write "LDFLAGS := ${LDFLAGS:-}"
 	write
 
 	write "Q := @"
 	write
 
-	if [[ -z "${all}" ]] || (( ${#all[@]} == 0 )); then
-		all=(${targets[@]} $((( ${#subdirs[@]} > 0 )) && echo subdirs))
-	fi
-
+	(( $#all )) || {
+		all=( $targets )
+		(( $#subdirs )) && all+=subdirs
+	}
 	write -n "all: ${all[@]}"
 
 	if $gnu; then
@@ -301,12 +318,14 @@ function main {
 			exported_rules+=("$target")
 		fi
 
-		typeset -a src
-		src=($(echo ${sources[$target]}))
-		local installdir="${install[$target]}"
+		local -a src=( ${=sources[$target]:-} )
+        # TODO: what to do ????
+		# (( $+install[$target] )) || die "no installation dir for $target"
+		local installdir=${install[$target]:-./}
 
 		if exists "${type[$target]}.build"; then
-			${type[$target]}.build
+            # TODO
+			${type[${target:-DAFUUUUUQ}]:-DAFUQ}.build
 		else
 			if ! exists "${type[$target]}.test"; then
 				error "No predefined rule for the following type: ${type[$target]}"
@@ -369,7 +388,9 @@ function main {
 		((target_index++))
 	done
 
-	typeset -l -a target_directories
+    #TODO: da crap!
+    typeset -l -a target_directories
+    local directory
 	for target in "${targets[@]}"; do
 		directory="${target%/*}"
 		if [[ "$target" =~ .*/ ]] && ! has "${directory}" "${target_directories[@]}"; then
@@ -388,6 +409,8 @@ function main {
 		write "\t${Q}mkdir -p \$(DESTDIR)${dir}"
 	done
 
+    #TODO: da crap!
+    local __
 	for dir __ in ${prefixes[@]}; do
 		write "\$(DESTDIR)\$(${dir}):"
 		write "\t@echo '$(DIR "\$(${dir})")'"
@@ -473,27 +496,15 @@ function main {
 
 		typeset -a distfiles
 		distfiles=($(get_distfiles))
-		local i
-
-		for i in {1..${#distfiles[@]}}; do
-			if duplicated "${distfiles[${i}]}" "${distfiles[@]}"; then
-				distfiles[${i}]=
-			fi
-		done
+		local i flag
+        distfiles=( ${(u)distfiles})
+        write DISTFILES= ${(j: \\\n\t:):-'${PACKAGE}-${VERSION}/'$^distfiles} "\n"
 
 		for i flag in gz z xz J bz2 j; do
 			write "dist-${i}: \$(PACKAGE)-\$(VERSION).tar.$i"
 			write "\$(PACKAGE)-\$(VERSION).tar.$i: distdir"
 			write "\t@echo '$(TAR "\$(PACKAGE)-\$(VERSION).tar.$i")'"
-			write "\t${Q}tar c${flag}f \$(PACKAGE)-\$(VERSION).tar.$i \\"
-			for i in {1..${#distfiles}}; do
-				if [[ -n "${distfiles[$i]}" ]]; then
-					write -n "\t\t\$(PACKAGE)-\$(VERSION)/${distfiles[$i]}"
-					if (( i != ${#distfiles} )); then
-						write " \\"
-					fi
-				fi
-			done
+			write "\t${Q}tar c${flag}f \$(PACKAGE)-\$(VERSION).tar.$i \${DISTFILES}"
 			write "\n"
 		done
 	fi
@@ -515,12 +526,14 @@ function main {
 		clean      "Removes compiled files."
 		uninstall  "Deinstalls the project."
 	)
+    local rule message
 	for rule message in ${help[@]}; do
 		printf "	@echo '${reset_color}    - ${fg_bold[green]}%-14s${fg[white]} $message${reset_color}'\n" \
 			"$rule" >> $Makefile
 	done
 
 	write "	@echo ''"
+    local VAR
 	write "	@echo '${fg_bold[white]}CLI-modifiable variables:${reset_color}'"
 	for VAR in CC CFLAGS LDFLAGS DESTDIR; do
 		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]} \${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
@@ -538,11 +551,9 @@ function main {
 	# Computing how many characters should be reserved for the left part
 	# of those lines. The name of the target will be displayed in it.
 	local name_slot_size=14
+    local T
 	for T in ${targets[@]}; do
-		if [[ "${auto[$T]}" == true ]]; then
-			continue
-		fi
-
+		${auto[$T]:-false} && continue
 		if (( $#T > 22 )); then
 			name_slot_size=30
 			break
@@ -552,9 +563,8 @@ function main {
 	done
 
 	for T in ${targets[@]}; do
-		if [[ "${auto[$T]}" != true ]]; then
+        ${auto[$T]:-false} ||
 			printf "	@echo '    - ${fg_bold[yellow]}%-${name_slot_size}s${fg[white]} ${type[$T]}${reset_color}'\n" "$T" >> $Makefile
-		fi
 	done
 
 	write "	@echo ''"

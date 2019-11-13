@@ -24,7 +24,6 @@ build.zsh: build.zsh.in
 	$(Q)sed -e 's&@PREFIX@&$(PREFIX)&;s&@BINDIR@&$(BINDIR)&;s&@LIBDIR@&$(LIBDIR)&;s&@SHAREDIR@&$(SHAREDIR)&;s&@INCLUDEDIR@&$(INCLUDEDIR)&;s&@MANDIR@&$(MANDIR)&;' build.zsh.in > 'build.zsh'
 	$(Q)chmod +x 'build.zsh'
 
-
 build.zsh.install: build.zsh
 	@echo '  IN >    $(BINDIR)/build.zsh'
 	$(Q)mkdir -p '$(DESTDIR)$(BINDIR)'
@@ -253,68 +252,40 @@ distdir:
 	$(Q)rm -rf -- $(PACKAGE)-$(VERSION)
 	$(Q)ln -s -- . $(PACKAGE)-$(VERSION)
 
+DISTFILES= ${PACKAGE}-${VERSION}/build/binary.zsh \
+	${PACKAGE}-${VERSION}/build/crystal.zsh \
+	${PACKAGE}-${VERSION}/build/header.zsh \
+	${PACKAGE}-${VERSION}/build/library.zsh \
+	${PACKAGE}-${VERSION}/build/livescript.zsh \
+	${PACKAGE}-${VERSION}/build/man.zsh \
+	${PACKAGE}-${VERSION}/build/moon.zsh \
+	${PACKAGE}-${VERSION}/build/ofile.zsh \
+	${PACKAGE}-${VERSION}/build/sass.zsh \
+	${PACKAGE}-${VERSION}/build/scdocman.zsh \
+	${PACKAGE}-${VERSION}/build/script.zsh \
+	${PACKAGE}-${VERSION}/build/sharedlib.zsh \
+	${PACKAGE}-${VERSION}/build/staticlib.zsh \
+	${PACKAGE}-${VERSION}/build.zsh.in \
+	${PACKAGE}-${VERSION}/project.zsh \
+	${PACKAGE}-${VERSION}/Makefile 
+
 dist-gz: $(PACKAGE)-$(VERSION).tar.gz
 $(PACKAGE)-$(VERSION).tar.gz: distdir
 	@echo '  TAR >   $(PACKAGE)-$(VERSION).tar.gz'
-	$(Q)tar czf $(PACKAGE)-$(VERSION).tar.gz \
-		$(PACKAGE)-$(VERSION)/build/binary.zsh \
-		$(PACKAGE)-$(VERSION)/build/crystal.zsh \
-		$(PACKAGE)-$(VERSION)/build/header.zsh \
-		$(PACKAGE)-$(VERSION)/build/library.zsh \
-		$(PACKAGE)-$(VERSION)/build/livescript.zsh \
-		$(PACKAGE)-$(VERSION)/build/man.zsh \
-		$(PACKAGE)-$(VERSION)/build/moon.zsh \
-		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
-		$(PACKAGE)-$(VERSION)/build/sass.zsh \
-		$(PACKAGE)-$(VERSION)/build/scdocman.zsh \
-		$(PACKAGE)-$(VERSION)/build/script.zsh \
-		$(PACKAGE)-$(VERSION)/build/sharedlib.zsh \
-		$(PACKAGE)-$(VERSION)/build/staticlib.zsh \
-		$(PACKAGE)-$(VERSION)/build.zsh.in \
-		$(PACKAGE)-$(VERSION)/project.zsh \
-		$(PACKAGE)-$(VERSION)/Makefile
+	$(Q)tar czf $(PACKAGE)-$(VERSION).tar.gz ${DISTFILES}
+
 
 dist-xz: $(PACKAGE)-$(VERSION).tar.xz
 $(PACKAGE)-$(VERSION).tar.xz: distdir
 	@echo '  TAR >   $(PACKAGE)-$(VERSION).tar.xz'
-	$(Q)tar cJf $(PACKAGE)-$(VERSION).tar.xz \
-		$(PACKAGE)-$(VERSION)/build/binary.zsh \
-		$(PACKAGE)-$(VERSION)/build/crystal.zsh \
-		$(PACKAGE)-$(VERSION)/build/header.zsh \
-		$(PACKAGE)-$(VERSION)/build/library.zsh \
-		$(PACKAGE)-$(VERSION)/build/livescript.zsh \
-		$(PACKAGE)-$(VERSION)/build/man.zsh \
-		$(PACKAGE)-$(VERSION)/build/moon.zsh \
-		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
-		$(PACKAGE)-$(VERSION)/build/sass.zsh \
-		$(PACKAGE)-$(VERSION)/build/scdocman.zsh \
-		$(PACKAGE)-$(VERSION)/build/script.zsh \
-		$(PACKAGE)-$(VERSION)/build/sharedlib.zsh \
-		$(PACKAGE)-$(VERSION)/build/staticlib.zsh \
-		$(PACKAGE)-$(VERSION)/build.zsh.in \
-		$(PACKAGE)-$(VERSION)/project.zsh \
-		$(PACKAGE)-$(VERSION)/Makefile
+	$(Q)tar cJf $(PACKAGE)-$(VERSION).tar.xz ${DISTFILES}
+
 
 dist-bz2: $(PACKAGE)-$(VERSION).tar.bz2
 $(PACKAGE)-$(VERSION).tar.bz2: distdir
 	@echo '  TAR >   $(PACKAGE)-$(VERSION).tar.bz2'
-	$(Q)tar cjf $(PACKAGE)-$(VERSION).tar.bz2 \
-		$(PACKAGE)-$(VERSION)/build/binary.zsh \
-		$(PACKAGE)-$(VERSION)/build/crystal.zsh \
-		$(PACKAGE)-$(VERSION)/build/header.zsh \
-		$(PACKAGE)-$(VERSION)/build/library.zsh \
-		$(PACKAGE)-$(VERSION)/build/livescript.zsh \
-		$(PACKAGE)-$(VERSION)/build/man.zsh \
-		$(PACKAGE)-$(VERSION)/build/moon.zsh \
-		$(PACKAGE)-$(VERSION)/build/ofile.zsh \
-		$(PACKAGE)-$(VERSION)/build/sass.zsh \
-		$(PACKAGE)-$(VERSION)/build/scdocman.zsh \
-		$(PACKAGE)-$(VERSION)/build/script.zsh \
-		$(PACKAGE)-$(VERSION)/build/sharedlib.zsh \
-		$(PACKAGE)-$(VERSION)/build/staticlib.zsh \
-		$(PACKAGE)-$(VERSION)/build.zsh.in \
-		$(PACKAGE)-$(VERSION)/project.zsh \
-		$(PACKAGE)-$(VERSION)/Makefile
+	$(Q)tar cjf $(PACKAGE)-$(VERSION).tar.bz2 ${DISTFILES}
+
 
 help:
 	@echo ' :: build_zsh-0.4.1'
