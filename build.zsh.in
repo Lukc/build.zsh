@@ -30,36 +30,64 @@ function write {
 	echo "$@" >> $Makefile
 }
 
+function build_string {
+	local type_indicator="$1"
+	local operation="$2"
+	local file_name="$3"
+
+	local color="blue"
+
+	case $operation in
+		build)
+			color=blue;;
+		build-alt)
+			color=cyan;;
+		assemble)
+			color=green;;
+		generate)
+			color=yellow;;
+		install)
+			color=red;;
+		remove)
+			color=white;;
+		*)
+			color=magenta;;
+	esac
+
+	printf "${fg_bold[$color]}  %-6s  ${fg_bold[white]}$file_name${reset_color}\n" \
+		"$type_indicator >"
+}
+
 function CC {
-	echo "${fg_bold[blue]}  CC >    ${fg_bold[white]}$@${reset_color}"
+	build_string CC build "$@"
 }
 
 function LD {
-	echo "${fg_bold[green]}  LD >    ${fg_bold[white]}$@${reset_color}"
+	build_string LD assemble "$@"
 }
 
 function IN {
-	echo "${fg_bold[red]}  IN >    ${fg_bold[white]}$@${reset_color}"
+	build_string IN install "$@"
 }
 
 function LN {
-	echo "${fg_bold[yellow]}  LN >    ${fg_bold[white]}$@${reset_color}"
+	build_string LN other "$@"
 }
 
 function RM {
-	echo "${fg_bold[white]}  RM >    ${fg_bold[white]}$@${reset_color}"
+	build_string RM remove "$@"
 }
 
 function SED {
-	echo "${fg_bold[green]}  SED >   ${fg_bold[white]}$@${reset_color}"
+	build_string SED generate "$@"
 }
 
 function DIR {
-	echo "${fg_bold[magenta]}  DIR >   ${fg_bold[white]}$@${reset_color}"
+	build_string DIR other "$@"
 }
 
 function TAR {
-	echo "${fg_bold[yellow]}  TAR >   ${fg_bold[white]}$@${reset_color}"
+	build_string TAR generate "$@"
 }
 
 # Generic helpers
