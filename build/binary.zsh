@@ -20,9 +20,9 @@ function binary.build {
 	done
 	write " ${depends[$target]} $(dirdep $target)"
 	write "\t@echo '$(LD ${target})'"
-	write -n "\t$Q\$(CC) -o ${target} \$(LDFLAGS)"
-	write -n " ${src[@]//.c/.o}"
-	write " ${ldflags[$target]}"
+	write -n "\t$Q\$(CC) -o ${target}"
+	write -n "${ldflags[$target]}"
+	write -n " ${src[@]//.c/.o} \$(LDFLAGS)"
 	write
 
 	for i in ${src[@]}; do
