@@ -75,6 +75,18 @@ function has {
 	return 1
 }
 
+function has_array_key {
+	local element="$1"
+
+	shift 1
+
+	for key value ($@) {
+		[[ "$key" == "$element" ]] && return 0
+	}
+
+	return 1
+}
+
 # Specialized helpers
 
 function get_distfiles {
@@ -209,13 +221,6 @@ function main {
 		write "$var := ${val}"
 	done
 
-	write
-
-	write "CC := ${CC:-cc}"
-	write "AR := ${AR:-ar}"
-	write "RANLIB := ${RANLIB:-ranlib}"
-	write "CFLAGS := ${CFLAGS}"
-	write "LDFLAGS := ${LDFLAGS}"
 	write
 
 	write "Q := @"
@@ -444,13 +449,10 @@ function main {
 
 	write "	@echo ''"
 	write "	@echo '${fg_bold[white]}CLI-modifiable variables:${reset_color}'"
-	for VAR in CC CFLAGS LDFLAGS DESTDIR; do
+	for VAR __ in ${variables}; do
 		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]} \${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
 	done
 	for VAR __ in ${prefixes}; do
-		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]} \${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
-	done
-	for VAR __ in ${variables}; do
 		printf "	@echo '    - ${fg_bold[blue]}%-14s${fg[white]} \${$VAR}${reset_color}'\n" "$VAR" >> $Makefile
 	done
 

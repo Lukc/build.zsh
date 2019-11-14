@@ -8,12 +8,6 @@ SHAREDIR := $(PREFIX)/share
 INCLUDEDIR := $(PREFIX)/include
 MANDIR := $(SHAREDIR)/man
 
-CC := cc
-AR := ar
-RANLIB := ranlib
-CFLAGS := 
-LDFLAGS := 
-
 Q := @
 
 all: build.zsh build/binary.zsh build/crystal.zsh build/header.zsh build/library.zsh build/livescript.zsh build/man.zsh build/moon.zsh build/ofile.zsh build/sass.zsh build/scdocman.zsh build/script.zsh build/sharedlib.zsh build/staticlib.zsh
@@ -320,10 +314,6 @@ help:
 	@echo '    - uninstall      Deinstalls the project.'
 	@echo ''
 	@echo 'CLI-modifiable variables:'
-	@echo '    - CC             ${CC}'
-	@echo '    - CFLAGS         ${CFLAGS}'
-	@echo '    - LDFLAGS        ${LDFLAGS}'
-	@echo '    - DESTDIR        ${DESTDIR}'
 	@echo '    - PREFIX         ${PREFIX}'
 	@echo '    - BINDIR         ${BINDIR}'
 	@echo '    - LIBDIR         ${LIBDIR}'

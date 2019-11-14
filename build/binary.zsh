@@ -1,4 +1,18 @@
 
+function binary.prelude {
+	has_array_key CC $variables || \
+		variables+=(CC "cc")
+	has_array_key CXX $variables || \
+		variables+=(CXX "c++")
+	has_array_key LD $variables || \
+		variables+=(LD "\${CC}")
+
+	for variable in CFLAGS CXXFLAGS LDFLAGS; do
+		has_array_key $variable $variables || \
+			variables+=($variable " ")
+	done
+}
+
 function binary.build {
 	write -n "${target}:"
 	for i in ${src[@]}; do

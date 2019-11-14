@@ -1,15 +1,6 @@
 
 function crystal.prelude {
-	local has_crflags=false
-
-	for variable value in ${variables[@]}; do
-		if [[ "$variable" == "CRFLAGS" ]]; then
-			has_crflags=true
-			break
-		fi
-	done
-
-	if ! $has_crflags; then
+	if ! has_array_key CRFLAGS; then
 		variables+=(CRFLAGS "--release")
 	fi
 }

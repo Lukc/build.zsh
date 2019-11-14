@@ -1,4 +1,8 @@
 
+function ofile.prelude {
+	binary.prelude "$@"
+}
+
 function ofile.build {
 	local dirname="$(dirname "$target")"
 	write -n "${target}: ${target%.o}.c $(dirdep $target "${target%.o}.c ${sources[$target]}" "${depends[@target]}")"

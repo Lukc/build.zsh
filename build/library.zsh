@@ -1,4 +1,8 @@
 
+function library.prelude {
+	binary.prelude "$@"
+}
+
 function library.build {
 	write -n "${target}: ${target}.so ${target}.a $(dirdep $target)"
 	write
