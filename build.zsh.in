@@ -5,9 +5,6 @@
 #	  (stuff *will* break if you add non-C things as targets)
 #	- Clean some more (or a lot). I mean, this script could even be reused if
 #	  it were cleaner, more readable and somewhat more documented.
-#	- Using subdirs creates trouble. Really. Don’t do it unless it’s for
-#	  completely separate, independent sub-projects.
-#	  Also, they’re unmaintained and probably broken by now.
 #
 # WARNINGS and LIMITATIONS:
 # 	- Using a relative path in DESTDIR= *will* fail.
@@ -80,40 +77,6 @@ function has {
 
 # Specialized helpers
 
-function subdirs {
-	for DIR in ${subdirs[@]}; do
-		if $gnu; then
-			write "\t@echo '   ${fg_bold[red]}>>     ${fg_bold[magenta]}`pwd`/${DIR}${reset_color}'"
-		fi
-
-		write -n "\t${Q}(cd \"${DIR}\" && $MAKE"
-
-		if $gnu; then
-			write -n " --no-print-directory"
-		fi
-
-		write -n ' Q=$(Q) CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" DESTDIR="$(DESTDIR)"'
-
-		for name value in ${variables[@]}; do
-			write -n " ${name}=\"\$(${name})\""
-		done
-
-		for name path in ${prefixes[@]}; do
-			write -n " ${name}=\"\$(${name})\""
-		done
-
-		if (( $# > 0 )); then
-			write -n " $@"
-		fi
-
-		write ")"
-
-		if $gnu; then
-			write "\t@echo '   ${fg_bold[red]}<<     ${fg_bold[magenta]}`pwd`/${DIR}${reset_color}'"
-		fi
-	done
-}
-
 function get_distfiles {
 	for file in "${dist[@]}" $(echo ${sources[@]}) $(echo ${depends[@]}); do
 		if [[ -z "${nodist[$file]}" ]]; then
@@ -128,25 +91,6 @@ function get_distfiles {
 		if [[ -e "$file" ]]; then
 			echo "$file"
 		fi
-	done
-
-	for dir in ${subdirs[@]}; do
-		(
-			unset dist sources depends subdirs
-			typeset -a dist
-			typeset -A sources depends
-
-			cd "$dir"
-			. ./project.zsh
-			for file in $(get_distfiles); do
-				local file="${dir}/${file}"
-				while [[ "$file" =~ "\.\./" ]]; do
-					file="${file/[a-z]*\/\.\.\//}"
-				done
-
-				echo "${file}"
-			done
-		)
 	done
 }
 
@@ -278,7 +222,7 @@ function main {
 	write
 
 	if [[ -z "${all}" ]] || (( ${#all[@]} == 0 )); then
-		all=(${targets[@]} $((( ${#subdirs[@]} > 0 )) && echo subdirs))
+		all=(${targets[@]})
 	fi
 
 	write -n "all: ${all[@]}"
@@ -394,33 +338,19 @@ function main {
 		write "\t${Q}mkdir -p \$(DESTDIR)\$(${dir})"
 	done
 
-	(( ${#subdirs[@]} > 0 )) && {
-		write "subdirs:"
-		subdirs
-		write
-	}
-
-	write -n "install: subdirs.install"
+	write -n "install:"
 	for target in ${targets[@]}; do
 		write -n " ${target}.install"
 	done
 	write "\n\t@:\n"
 
-	write "subdirs.install:"
-	subdirs install
-	write
-
-	write -n "uninstall: subdirs.uninstall"
+	write -n "uninstall:"
 	for target in ${targets[@]}; do
 		write -n " ${target}.uninstall"
 	done
 	write "\n\t@:\n"
 
-	write "subdirs.uninstall:"
-	subdirs uninstall
-	write
-
-	write -n "test: all subdirs subdirs.test"
+	write -n "test: all"
 	for target in ${targets[@]}; do
 		if exists ${type[$target]}.test; then
 			write -n " ${target}.test"
@@ -434,10 +364,6 @@ function main {
 	else
 		write "\n\t@:\n"
 	fi
-
-	write "subdirs.test:"
-	subdirs test
-	write
 
 	write -n "clean:"
 	(( ${#targets[@]} > 0 )) && {
@@ -454,12 +380,8 @@ function main {
 		done
 	}
 	write
-	(( ${#subdirs[@]} > 0 )) && subdirs clean
-	write
 
 	write "distclean: clean"
-	(( ${#subdirs[@]} > 0 )) && subdirs distclean
-	write
 
 	if $root; then
 		write "dist: dist-gz dist-xz dist-bz2"
@@ -566,17 +488,7 @@ function main {
 	write "	@echo '${fg_bold[white]}Rebuild the Makefile with:${reset_color}'"
 	write "	@echo '    zsh ./build.zsh$($colors && echo -n " -c")$($gnu && echo -n " -g")'"
 
-	for i in ${subdirs[@]}; do
-		(
-			cd $i
-			unset subdirs targets dist sources ldflags depends install type variables
-			typeset -A sources ldflags depends install type variables
-			typeset -a targets dist
-			root=false main $i
-		)
-	done
-
-	write ".PHONY: all subdirs clean distclean dist install uninstall help"
+	write ".PHONY: all  clean distclean dist install uninstall help"
 	write
 }
 

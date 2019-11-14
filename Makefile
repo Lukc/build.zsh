@@ -227,25 +227,17 @@ $(DESTDIR)$(INCLUDEDIR):
 $(DESTDIR)$(MANDIR):
 	@echo '  DIR >   $(MANDIR)'
 	$(Q)mkdir -p $(DESTDIR)$(MANDIR)
-install: subdirs.install build.zsh.install build/binary.zsh.install build/crystal.zsh.install build/header.zsh.install build/library.zsh.install build/livescript.zsh.install build/man.zsh.install build/moon.zsh.install build/ofile.zsh.install build/sass.zsh.install build/scdocman.zsh.install build/script.zsh.install build/sharedlib.zsh.install build/staticlib.zsh.install
+install: build.zsh.install build/binary.zsh.install build/crystal.zsh.install build/header.zsh.install build/library.zsh.install build/livescript.zsh.install build/man.zsh.install build/moon.zsh.install build/ofile.zsh.install build/sass.zsh.install build/scdocman.zsh.install build/script.zsh.install build/sharedlib.zsh.install build/staticlib.zsh.install
 	@:
 
-subdirs.install:
-
-uninstall: subdirs.uninstall build.zsh.uninstall build/binary.zsh.uninstall build/crystal.zsh.uninstall build/header.zsh.uninstall build/library.zsh.uninstall build/livescript.zsh.uninstall build/man.zsh.uninstall build/moon.zsh.uninstall build/ofile.zsh.uninstall build/sass.zsh.uninstall build/scdocman.zsh.uninstall build/script.zsh.uninstall build/sharedlib.zsh.uninstall build/staticlib.zsh.uninstall
+uninstall: build.zsh.uninstall build/binary.zsh.uninstall build/crystal.zsh.uninstall build/header.zsh.uninstall build/library.zsh.uninstall build/livescript.zsh.uninstall build/man.zsh.uninstall build/moon.zsh.uninstall build/ofile.zsh.uninstall build/sass.zsh.uninstall build/scdocman.zsh.uninstall build/script.zsh.uninstall build/sharedlib.zsh.uninstall build/staticlib.zsh.uninstall
 	@:
 
-subdirs.uninstall:
-
-test: all subdirs subdirs.test
+test: all
 	@:
-
-subdirs.test:
 
 clean: build.zsh.clean build/binary.zsh.clean build/crystal.zsh.clean build/header.zsh.clean build/library.zsh.clean build/livescript.zsh.clean build/man.zsh.clean build/moon.zsh.clean build/ofile.zsh.clean build/sass.zsh.clean build/scdocman.zsh.clean build/script.zsh.clean build/sharedlib.zsh.clean build/staticlib.zsh.clean
-
 distclean: clean
-
 dist: dist-gz dist-xz dist-bz2
 	$(Q)rm -- $(PACKAGE)-$(VERSION)
 
@@ -361,5 +353,5 @@ help:
 	@echo ''
 	@echo 'Rebuild the Makefile with:'
 	@echo '    zsh ./build.zsh'
-.PHONY: all subdirs clean distclean dist install uninstall help
+.PHONY: all  clean distclean dist install uninstall help
 
