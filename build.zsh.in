@@ -195,7 +195,6 @@ function main {
 	typeset -A sources type depends install auto filename nodist
 
 	typeset -A chmod
-	typeset -a tests
 
 	prefixes=(
 		PREFIX '/usr/local'
@@ -285,10 +284,8 @@ function main {
 		if exists "${type[$target]}.build"; then
 			${type[$target]}.build
 		else
-			if ! exists "${type[$target]}.test"; then
-				error "No predefined rule for the following type: ${type[$target]}"
-				error "  (expect trouble, nothing’s gonna work!)"
-			fi
+			error "No predefined rule for the following type: ${type[$target]}"
+			error "  (expect trouble, nothing’s gonna work!)"
 		fi
 
 		if [[ "${installdir}" == "-" ]]; then
@@ -339,10 +336,6 @@ function main {
 			fi
 		fi
 
-		if exists "${type[$target]}.test"; then
-			${type[$target]}.test
-		fi
-
 		((target_index++))
 	done
 
@@ -382,21 +375,6 @@ function main {
 		write -n " ${target}.uninstall"
 	done
 	write "\n\t@:\n"
-
-	write -n "test: all"
-	for target in ${targets[@]}; do
-		if exists ${type[$target]}.test; then
-			write -n " ${target}.test"
-		fi
-	done
-	if (( ${#tests[@]} > 0 )); then
-		write
-		for test in ${tests[@]}; do
-			write "\t${Q}$test"
-		done
-	else
-		write "\n\t@:\n"
-	fi
 
 	write -n "clean:"
 	(( ${#targets[@]} > 0 )) && {

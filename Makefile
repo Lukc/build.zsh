@@ -227,9 +227,6 @@ install: build.zsh.install build/binary.zsh.install build/crystal.zsh.install bu
 uninstall: build.zsh.uninstall build/binary.zsh.uninstall build/crystal.zsh.uninstall build/header.zsh.uninstall build/library.zsh.uninstall build/livescript.zsh.uninstall build/man.zsh.uninstall build/moon.zsh.uninstall build/ofile.zsh.uninstall build/sass.zsh.uninstall build/scdocman.zsh.uninstall build/script.zsh.uninstall build/sharedlib.zsh.uninstall build/staticlib.zsh.uninstall
 	@:
 
-test: all
-	@:
-
 clean: build.zsh.clean build/binary.zsh.clean build/crystal.zsh.clean build/header.zsh.clean build/library.zsh.clean build/livescript.zsh.clean build/man.zsh.clean build/moon.zsh.clean build/ofile.zsh.clean build/sass.zsh.clean build/scdocman.zsh.clean build/script.zsh.clean build/sharedlib.zsh.clean build/staticlib.zsh.clean
 distclean: clean
 dist: dist-gz dist-xz dist-bz2
