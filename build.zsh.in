@@ -187,14 +187,17 @@ done
 ##
 
 function main {
+	# “Global”, per-project configuration.
 	typeset -a prefixes directories
 
-	# FIXME: We may want those to be defined somewhere else.
-	typeset -A ldflags cflags crflags
-
+	# “Local”, per-target configuration.
 	typeset -A sources type depends install auto filename nodist
-
 	typeset -A chmod
+
+	# Per-target configuration that is specific to certain target types.
+	# FIXME: Those should be removed from this file and exported in
+	#        the .prelude of their backend, or similar.
+	typeset -A ldflags cflags crflags
 
 	prefixes=(
 		PREFIX '/usr/local'
