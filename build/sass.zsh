@@ -9,7 +9,7 @@ function sass.prelude {
 }
 
 function sass.build {
-	write "${target}: ${sources[$target]} $(dirdep $target)"
+	write "${target}: ${sources[$target]} ${depends[$target]} $(dirdep $target)"
 	write "\t@echo '$(CSS ${target})'"
 	write "\t${Q}sassc ${sources[$target]} > ${target}"
 	write "\n"
