@@ -8,7 +8,9 @@
 #
 # WARNINGS and LIMITATIONS:
 # 	- Using a relative path in DESTDIR= *will* fail.
-#
+
+# be explicit about the fragile default behavior of zsh
+setopt unset nowarncreateglobal
 
 # Script output
 
